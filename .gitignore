@@ -1,0 +1,5 @@
+.venv
+.idea
+ui
+Pipfile
+Pipfile.lock
