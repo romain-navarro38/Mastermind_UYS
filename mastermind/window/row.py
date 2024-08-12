@@ -15,19 +15,19 @@ class Status(StrEnum):
 
 
 class VerticalSeparator(QFrame):
-    def __init__(self, enabled: bool = False, *args, **kwargs):
+    def __init__(self, enabled: bool = False, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         self.set_color(enabled)
         self.setFrameShape(QFrame.Shape.VLine)
         self.setFrameShadow(QFrame.Shadow.Sunken)
 
-    def set_color(self, enabled: bool):
+    def set_color(self, enabled: bool) -> None:
         self.setStyleSheet(f"background-color: {Color.WHITE if enabled else Color.BLACK}")
 
 
 class Row(QHBoxLayout):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         self.title = QLabel('')
@@ -40,7 +40,7 @@ class Row(QHBoxLayout):
 # noinspection PyTypeChecker
 class RowSecret(Row):
     """Représente la ligne contenant la combinaison secrète."""
-    def __init__(self, secret_colours: list[Color], *args, **kwargs):
+    def __init__(self, secret_colours: list[Color], *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         self.title.setStyleSheet("color: white;")
@@ -61,7 +61,7 @@ class RowSecret(Row):
         self.game_over.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.addWidget(self.game_over)
 
-    def reveal_combination(self, winner: bool):
+    def reveal_combination(self, winner: bool) -> None:
         """Modifie l'apparence de la ligne pour révéler la combinaison
         secrète et afficher si la partie est gagnée ou perdue."""
         for i in range(self.colors_layout.count()):
@@ -74,7 +74,7 @@ class RowSecret(Row):
 # noinspection PyUnresolvedReferences
 class RowTry(Row):
     """Représente une ligne d'essai."""
-    def __init__(self, window: QWidget, row_number: int, *args, **kwargs):
+    def __init__(self, window: QWidget, row_number: int, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         self.title.setText(f"{row_number}")
@@ -98,7 +98,7 @@ class RowTry(Row):
         self.addSpacerItem(verticalSpacer)
         self.set_status(Status.ON_HOLD)
 
-    def set_status(self, status: Status):
+    def set_status(self, status: Status) -> None:
         """Modifie l'apparence de la ligne en fonction de l'état donné."""
         for i in range(self.colors_layout.count()):
             match status:
@@ -117,7 +117,7 @@ class RowTry(Row):
         if status == Status.ACTIVATED:
             self.colors_layout.itemAt(0).widget().set_selected(True)
 
-    def select_next_try_piece(self):
+    def select_next_try_piece(self) -> None:
         """Passe à l'état 'sélecionné' le pion qui suit celui
         qui est actuellement 'sélectionné' dans la ligne."""
         piece_try: PieceTry = next(

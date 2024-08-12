@@ -6,7 +6,7 @@ from mastermind.game.parameter import Level, Color, Try, SIZE_COMBINATION
 class Mastermind:
     def __init__(self,
                  level: Level = Level.NORMAL,
-                 tries_number: Try = Try.NORMAL):
+                 tries_number: Try = Try.NORMAL) -> None:
         self.level = level
         self.max_tries = tries_number
         self.try_counter = 0
@@ -22,22 +22,6 @@ class Mastermind:
         """Merci à @Mack pour cet algorithme qui m'a bien simplifié la méthode.
         Retourne une liste de Color représentant des indices déterminés en
         comparant la combinaison passée en paramètre et combinaison secrète."""
-        # evaluation = []
-        # secret = self.secret_combinaison.copy()
-        # for i, elem in enumerate(combinaison):
-        #     if elem == secret[i]:
-        #         evaluation.append(Color.RED)
-        #         secret[i] = Color.UNDEFINED
-        #         combinaison[i] = None
-        #
-        # for elem in combinaison:
-        #     if elem in secret:
-        #         evaluation.append(Color.WHITE)
-        #         secret.remove(elem)
-        #
-        # self.check_game_over(evaluation)
-        # return evaluation
-
         if len(combination) == SIZE_COMBINATION and set(combination) <= set(self.available_colors):
             self.try_counter += 1
             red = sum(1 for s, c in zip(self.secret_combinaison, combination, strict=False) if s == c)

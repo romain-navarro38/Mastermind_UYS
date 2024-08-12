@@ -11,7 +11,7 @@ from mastermind.window.row import RowTry, Status, RowSecret
 
 class MainWindow(QWidget):
     """Fenêtre principale"""
-    def __init__(self, mastermind: Mastermind):
+    def __init__(self, mastermind: Mastermind) -> None:
         super().__init__()
 
         self.mastermind = mastermind
@@ -20,7 +20,7 @@ class MainWindow(QWidget):
         self.setup_ui()
         self.setStyleSheet("background-color: black;")
 
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         self.main_layout = QGridLayout(self)
         self.tries_layout = QVBoxLayout()
         self.color_layout = QVBoxLayout()
@@ -79,7 +79,7 @@ class MainWindow(QWidget):
         self.main_layout.addLayout(self.color_layout, 0, 1, 1, 1)
         self.main_layout.addLayout(self.row_secret, 1, 0, 1, 2)
 
-    def piece_selected(self, piece_try: PieceTry):
+    def piece_selected(self, piece_try: PieceTry) -> None:
         """Le pion cliqué passe à l'état sélectionné. Les autres
         sont désectionnés s'ils l'étaient."""
         try_layout = self.rows[self.row_actived].children()[0]
@@ -87,7 +87,7 @@ class MainWindow(QWidget):
             try_layout.itemAt(i).widget().set_selected(False)
         piece_try.set_selected(True)
 
-    def positioned_color(self, color: Color):
+    def positioned_color(self, color: Color) -> None:
         """Une couleur est appliquée au pion à l'état sélectionné."""
         try_layout = self.rows[self.row_actived].colors_layout
         for i in range(try_layout.count()):
@@ -97,7 +97,7 @@ class MainWindow(QWidget):
         self.rows[self.row_actived].select_next_try_piece()
         self.btn_try.setEnabled(self.valided_row())
 
-    def validate_combinaison(self):
+    def validate_combinaison(self) -> None:
         """Déclenche les actions suite à la validation d'une ligne :
             - Affichage des indices,
             - Désactivation de la ligne d'essai actuelle,
@@ -117,14 +117,14 @@ class MainWindow(QWidget):
         """Retourne True si une couleur a été appliquée à chaque pion."""
         return Color.GRAY not in self.get_try_combination()
 
-    def display_clues(self, clues: list[Color]):
+    def display_clues(self, clues: list[Color]) -> None:
         """Affiche dans la ligne active les couleurs des indices
         passés en paramètres."""
         clue_layout = self.rows[self.row_actived].clues_layout
         for i, color in enumerate(clues):
             clue_layout.itemAt(i).widget().set_color(color)
 
-    def is_game_over(self):
+    def is_game_over(self) -> None:
         """Si la partie est terminée, lance son affichage, sinon
         lance l'activation de la prochaine ligne d'essai."""
         if self.mastermind.game_over:
@@ -132,17 +132,17 @@ class MainWindow(QWidget):
         else:
             self.activate_next_try()
 
-    def activate_next_try(self):
+    def activate_next_try(self) -> None:
         """Activation d'une nouvelle ligne d'essai"""
         self.row_actived += 1
         self.rows[self.row_actived].set_status(Status.ACTIVATED)
 
-    def display_game_over(self):
+    def display_game_over(self) -> None:
         """Affichage de fin partie, la combinaison
         secrète est révélée."""
         self.row_secret.reveal_combination(self.mastermind.win)
 
-    def open_window_rules(self):
+    def open_window_rules(self) -> None:
         pass
 
 
