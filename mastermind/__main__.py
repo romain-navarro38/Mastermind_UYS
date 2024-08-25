@@ -2,14 +2,18 @@ import sys
 
 from PySide6.QtWidgets import QApplication
 
-from mastermind.game.game import Mastermind
-from mastermind.window.main_window import MainWindow
+from mastermind.controllers.console_controller import ConsoleController
+from mastermind.controllers.window_controller import WindowController
+from mastermind.model.game import Mastermind
+from mastermind.views.main_window import MainWindow
 
 
 def main():
     app = QApplication()
-    window = MainWindow(Mastermind())
-    window.show()
+    model = Mastermind()
+    view = MainWindow()
+    controller = WindowController(model, view)
+    controller.run()
     sys.exit(app.exec())
 
 
