@@ -2,10 +2,11 @@ from enum import StrEnum, auto
 from functools import partial
 
 from PySide6.QtCore import Qt, QSize
-from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QWidget, QSizePolicy, QFrame, QLabel, QSpacerItem
+from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QWidget, QSizePolicy, QFrame, QLabel
 
 from mastermind.model.parameters import Color, SIZE_COMBINATION
 from mastermind.views.piece import PieceClue, PieceTry, PieceSecret
+from mastermind.views.spacer import CustomSpacer, Orientation
 
 
 class Status(StrEnum):
@@ -15,6 +16,7 @@ class Status(StrEnum):
 
 
 class VerticalSeparator(QFrame):
+    """Ligne verticale servant de séparation entre les éléments de l'UI"""
     def __init__(self, enabled: bool = False, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
@@ -23,10 +25,14 @@ class VerticalSeparator(QFrame):
         self.setFrameShadow(QFrame.Shadow.Sunken)
 
     def set_color(self, enabled: bool) -> None:
+        """Modifie la couleur en fonction de l'état d'activation voulu.
+        Activé : blanc
+        Désactivé : noir"""
         self.setStyleSheet(f"background-color: {Color.BLANC if enabled else Color.NOIR}")
 
 
 class Row(QHBoxLayout):
+    """Ligne verticale pour accueillir des pions (Piece)"""
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
@@ -81,11 +87,11 @@ class RowTry(Row):
         pieces_try = [PieceTry(Color.NOIR) for _ in range(SIZE_COMBINATION)]
         for i in range(SIZE_COMBINATION):
             piece_try = pieces_try[i]
-            piece_try.next_piece = pieces_try[i + 1 if i < 3 else 0]
+            piece_try.next_piece = pieces_try[i + 1 if i < SIZE_COMBINATION - 1 else 0]
             piece_try.clicked.connect(partial(window.piece_selected, piece_try))
             self.colors_layout.addWidget(piece_try)
             piece_clue = PieceClue()
-            self.clues_layout.addWidget(piece_clue, i // 2, i % 2, 1, 1)
+            self.clues_layout.addWidget(piece_clue, i % 2, i // 2, 1, 1)
 
         self.addWidget(self.title)
         self.separator1 = VerticalSeparator()
@@ -94,8 +100,7 @@ class RowTry(Row):
         self.separator2 = VerticalSeparator()
         self.addWidget(self.separator2)
         self.addLayout(self.clues_layout)
-        vertical_pacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-        self.addSpacerItem(vertical_pacer)
+        self.addSpacerItem(CustomSpacer(Orientation.HORIZONTAL))
         self.set_status(Status.ON_HOLD)
 
     def set_status(self, status: Status) -> None:
