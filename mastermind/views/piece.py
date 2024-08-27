@@ -33,6 +33,7 @@ class PieceClue(Piece):
         self.set_color(Color.NOIR)
 
     def set_color(self, color: Color) -> None:
+        """Associe une Color au pion et lui applique"""
         self.color = color
         self.setStyleSheet(f"border-radius: {self.radius}px;background-color: {color.value};")
 
@@ -49,10 +50,12 @@ class PieceColor(Piece):
         self.set_color(self.color)
 
     def set_color(self, color: Color) -> None:
+        """Associe une Color au pion et lui applique"""
         self.color = color
         self.setStyleSheet(f"border-radius: {self.radius}px;background-color: {color.value};")
 
     def mousePressEvent(self, ev: QMouseEvent) -> None:
+        """Emission du signal clicked, portant la couleur du pion cliqué"""
         self.clicked.emit(self.color)
 
 
@@ -65,9 +68,10 @@ class PieceSecret(Piece):
         self.radius = PieceSize.SECRET.value // 2
         self.set_color(Color.GRIS)
         self.setText("?")
-        self.setAlignment(Qt.AlignCenter)
+        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
     def set_color(self, color: Color) -> None:
+        """Applique une couleur au pion"""
         self.setStyleSheet(f"border-radius: {self.radius}px;background-color: {color.value};")
 
 
@@ -86,7 +90,7 @@ class PieceTry(Piece):
         self.next_piece = None
 
     def set_color(self, color: Color) -> None:
-        """Applique une couleur au pion et ajoute une bordure
+        """Défini et applique une couleur au pion et ajoute une bordure
         s'il est à l'état 'sélectionné'."""
         self.color = color
         self.setStyleSheet(
@@ -104,9 +108,11 @@ class PieceTry(Piece):
         self.set_color(self.color)
 
     def mousePressEvent(self, ev: QMouseEvent) -> None:
+        """Emission du signal clicked"""
         self.clicked.emit()
 
     def setEnabled(self, arg__1) -> None:
+        """Défini l'état d'activation (True ou False) du pion"""
         super().setEnabled(arg__1)
         if not arg__1:
             self.set_selected(arg__1)
