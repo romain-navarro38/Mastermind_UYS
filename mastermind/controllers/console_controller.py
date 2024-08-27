@@ -4,6 +4,7 @@ from mastermind.views.console import Console
 
 
 def convertion_color(colors: list[Color], symbol: str = None) -> list[str]:
+    """Construit une liste de chaînes de caractères colorés (ANSI)"""
     str_color, number, text = [], "", symbol
     for i, color in enumerate(colors, 1):
         red, green, blue = (int(color[j:j + 2], 16) for j in range(1, len(color), 2))
@@ -20,18 +21,30 @@ class ConsoleController:
         self.view = view
         self.colors = {str(i): color for i, color in enumerate(self.model.available_colors, 1)}
 
-    def build_colored_choices(self) -> list[str]:
-        return convertion_color(self.model.available_colors)
+    def _get_user_combination(self) -> list[Color]:
+        """Obtient de l'utilisateur une combinaison.
+        La retourne sous d'une liste de Color"""
+        user_combination = self.view.get_user_combination(self.model.try_counter + 1,
+                                                          self.model.max_tries.value,
+                                                          SIZE_COMBINATION)
+        return [self.colors.get(char, Color.GRIS) for char in user_combination]
 
-    def run(self):
-        self.view.show_rules(PREAMBLE, self.build_colored_choices())
-        while not self.model.game_over:
-            user_combination = self.view.get_user_combination(
-                self.model.try_counter + 1,
-                self.model.max_tries.value,
-                SIZE_COMBINATION
-            )
-            colored_combination = [self.colors.get(char, Color.GRIS) for char in user_combination]
+    def _endgame(self) -> bool:
+        """Si la partie est terminée, fait afficher à l'UI le résultat final"""
+        if not self.model.game_over:
+            return False
+        game_over_sentence = ("Bravo ! Vous avez trouvé la combinaison secrète : "
+                              if self.model.win
+                              else "Raté ! La combinaison secrète était : ")
+        self.view.show_game_over(game_over_sentence,
+                                 convertion_color(self.model.get_secret_combination(), SQUARE))
+        return True
+
+    def run(self) -> None:
+        """Boucle du jeu"""
+        self.view.show_rules(PREAMBLE, convertion_color(self.model.available_colors))
+        while True:
+            colored_combination = self._get_user_combination()
             evaluation = self.model.evaluate_combinaison(colored_combination)
             if evaluation is not None:
                 self.view.show_result(convertion_color(colored_combination, SQUARE), convertion_color(evaluation, DOT))
@@ -39,17 +52,5 @@ class ConsoleController:
                 self.view.show_warning()
                 continue
 
-            if self.model.game_over:
-                game_over_sentence = ("Bravo ! Vous avez trouvé la combinaison secrète : "
-                                      if self.model.win
-                                      else "Raté ! La combinaison secrète était : ")
-                self.view.show_game_over(game_over_sentence, convertion_color(self.model.secret_combinaison, SQUARE))
+            if self._endgame():
                 break
-
-
-if __name__ == '__main__':
-    m = Mastermind()
-    v = Console()
-    c = ConsoleController(m, v)
-    print(c.model.secret_combinaison)
-    c.run()
