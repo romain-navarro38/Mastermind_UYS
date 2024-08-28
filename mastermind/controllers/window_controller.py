@@ -13,25 +13,21 @@ class WindowController:
         self.view = view
         self.view.evaluation_combination.connect(self.evaluate_combination)
 
-    def load_ui(self):
-        self.view.setup_ui(self.model.max_tries.value, self.model.level.value, self.model.secret_combinaison)
+    def load_ui(self) -> None:
+        """Chargement des composants de la fenêtre"""
+        self.view.setup_ui(self.model.max_tries.value, self.model.level.value, self.model.get_secret_combination())
 
-    def get_max_tries(self):
-        return self.model.max_tries.value
-
-    def get_secret_combination(self):
-        return self.model.secret_combinaison
-
-    def get_level(self):
-        return self.model.level.value
-
-    def is_game_over(self):
+    def is_game_over(self) -> bool:
+        """Retourne True si la partie est terminée"""
         return self.model.game_over
 
-    def is_win(self):
+    def is_win(self) -> bool:
+        """Retourne True si la partie est gagnée"""
         return self.model.win
 
-    def evaluate_combination(self, combination: list[Color]):
+    def evaluate_combination(self, combination: list[Color]) -> None:
+        """Obtient du modèle les indices associés à la combinaison évaluée
+        et met à jour la vue en conséquence"""
         if (clues := self.model.evaluate_combinaison(combination)) is None:
             return
         self.view.display_clues(clues)
@@ -41,7 +37,8 @@ class WindowController:
         else:
             self.view.activate_next_try()
 
-    def run(self):
+    def run(self) -> None:
+        """Affiche la fenêtre principale"""
         self.load_ui()
         self.view.show()
 
