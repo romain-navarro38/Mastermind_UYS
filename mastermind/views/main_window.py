@@ -1,11 +1,11 @@
 from PySide6.QtCore import Qt, QSize, Signal
 from PySide6.QtGui import QIcon, QPixmap, QFont
-from PySide6.QtWidgets import QWidget, QLabel, QGridLayout, QVBoxLayout, QPushButton, QSpacerItem, \
-    QSizePolicy
+from PySide6.QtWidgets import QWidget, QLabel, QGridLayout, QVBoxLayout, QPushButton
 
 from mastermind.model.parameters import Color, RESOURCE_DIR
 from mastermind.views.piece import PieceColor, PieceTry
 from mastermind.views.row import RowTry, Status, RowSecret
+from mastermind.views.spacer import Orientation, CustomSpacer
 
 
 class MainWindow(QWidget):
@@ -19,8 +19,8 @@ class MainWindow(QWidget):
         self.pieces_colors = []
 
     def setup_ui(self, max_tries: int, level: int, secret_combination: list[Color]) -> None:
-        self.setWindowTitle("Combinaison secrète - Up Your Skills")
-        print(RESOURCE_DIR)
+        """Chargement, modification, disposition et connexion des composants"""
+        self.setWindowTitle("Devine la combinaison secrète - Up Your Skills")
         self.setWindowIcon((QIcon(QPixmap(RESOURCE_DIR / "logo.ico"))))
         self.setStyleSheet("background-color: black;")
         self.create_widgets(max_tries, level, secret_combination)
@@ -35,26 +35,21 @@ class MainWindow(QWidget):
             self.rows[i] = row
 
         self.btn_rules = QPushButton("Règles du jeu")
-
         self.row_secret = RowSecret(secret_combination)
-
-        self.vertical_spacer_1 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
+        self.vertical_spacer_1 = CustomSpacer(Orientation.VERTICAL)
         self.lab_select_color = QLabel("Sélectionner vos couleurs")
 
         for color, _ in zip(Color, range(level)):
             piece_color = PieceColor(color)
             self.pieces_colors.append(piece_color)
 
-        self.vertical_spacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
+        self.vertical_spacer_2 = CustomSpacer(Orientation.VERTICAL)
         self.btn_try = QPushButton("Proposer")
-
-        self.vertical_spacer_3 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.vertical_spacer_3 = CustomSpacer(Orientation.VERTICAL)
 
     def modify_widgets(self):
         self.rows[0].set_status(Status.ACTIVATED)
-        self.row_actived = 0
+        self.num_row_enabled = 0
 
         font_bold = QFont()
         font_bold.setBold(True)
@@ -109,61 +104,50 @@ class MainWindow(QWidget):
     def piece_selected(self, piece_try: PieceTry) -> None:
         """Le pion cliqué passe à l'état sélectionné. Les autres
         sont désélectionnés s'ils l'étaient."""
-        try_layout = self.rows[self.row_actived].children()[0]
+        try_layout = self.rows[self.num_row_enabled].children()[0]
         for i in range(try_layout.count()):
             try_layout.itemAt(i).widget().set_selected(False)
         piece_try.set_selected(True)
 
     def positioned_color(self, color: Color) -> None:
         """Une couleur est appliquée au pion à l'état sélectionné."""
-        try_layout = self.rows[self.row_actived].colors_layout
+        try_layout = self.rows[self.num_row_enabled].colors_layout
         for i in range(try_layout.count()):
             if try_layout.itemAt(i).widget().is_selected:
                 try_layout.itemAt(i).widget().set_color(color)
                 break
-        self.rows[self.row_actived].select_next_try_piece()
-        self.btn_try.setEnabled(self.valided_row())
+        self.rows[self.num_row_enabled].select_next_try_piece()
+        self.btn_try.setEnabled(self.is_active_row_valid())
 
     def validate_combinaison(self) -> None:
-        """Déclenche les actions suite à la validation d'une ligne :
-            - Affichage des indices,
-            - Désactivation de la ligne d'essai actuelle,
-            - Désactive le bouton de proposition,
-            - Vérification de l'état de la partie."""
+        """Émet dans un signal la combinaison de la ligne active"""
         self.evaluation_combination.emit(self.get_try_combination())
 
     def deactivate_row(self):
-        self.rows[self.row_actived].set_status(Status.DEACTIVATED)
+        """Désactivation de la ligne active"""
+        self.rows[self.num_row_enabled].set_status(Status.DEACTIVATED)
         self.btn_try.setEnabled(False)
 
     def get_try_combination(self) -> list[Color]:
         """Récupère la liste des couleurs de la ligne active."""
-        try_layout = self.rows[self.row_actived].colors_layout
+        try_layout = self.rows[self.num_row_enabled].colors_layout
         return [try_layout.itemAt(i).widget().color for i in range(try_layout.count())]
 
-    def valided_row(self) -> bool:
+    def is_active_row_valid(self) -> bool:
         """Retourne True si une couleur a été appliquée à chaque pion."""
         return Color.GRIS not in self.get_try_combination()
 
     def display_clues(self, clues: list[Color]) -> None:
         """Affiche dans la ligne active les couleurs des indices
         passés en paramètres."""
-        clue_layout = self.rows[self.row_actived].clues_layout
+        clue_layout = self.rows[self.num_row_enabled].clues_layout
         for i, color in enumerate(clues):
             clue_layout.itemAt(i).widget().set_color(color)
 
-    def is_game_over(self) -> None:
-        """Si la partie est terminée, lance son affichage, sinon
-        lance l'activation de la prochaine ligne d'essai."""
-        if self.mastermind.game_over:
-            self.display_game_over()
-        else:
-            self.activate_next_try()
-
     def activate_next_try(self) -> None:
-        """Activation d'une nouvelle ligne d'essai"""
-        self.row_actived += 1
-        self.rows[self.row_actived].set_status(Status.ACTIVATED)
+        """Activation de la prochaine ligne d'essai"""
+        self.num_row_enabled += 1
+        self.rows[self.num_row_enabled].set_status(Status.ACTIVATED)
 
     def display_game_over(self, is_win: bool) -> None:
         """Affichage de fin partie, la combinaison
