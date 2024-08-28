@@ -15,7 +15,7 @@ class Mastermind:
                  tries_number: Try = Try.NORMAL) -> None:
         self.init_new_game(level, tries_number)
 
-    def init_new_game(self, level: Level, max_tries: Try):
+    def init_new_game(self, level: Level, max_tries: Try) -> None:
         """Initialiser les attributs pour commencer une nouvelle partie"""
         self.level = level
         self.max_tries = max_tries
