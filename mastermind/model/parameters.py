@@ -30,6 +30,11 @@ class Color(StrEnum):
     NOIR = "#000000"
     GRIS = '#7f7f7f'
 
+    def to_rgb(self) -> tuple[int, int, int]:
+        """Retourne la couleur au format RGB"""
+        return (int(self.value[i:i + 2], 16) for i in range(1, len(self.value), 2))
+
+
 
 class Level(Enum):
     """Classe Enum représentant le nombre de couleurs disponible
@@ -58,3 +63,9 @@ class Try(Enum):
     @classmethod
     def from_string(cls, name: str) -> Self:
         return next(attribute for attribute in cls if attribute.name.lower() == name)
+
+
+if __name__ == '__main__':
+    for color in Color:
+        rouge, vert, bleu = color.to_rgb()
+        print(f"{color.name.capitalize()} : {rouge=}, {vert=}, {bleu=}")

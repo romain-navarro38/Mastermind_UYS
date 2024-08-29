@@ -4,10 +4,10 @@ from mastermind.views.console import Console
 
 
 def convertion_color(colors: list[Color], symbol: str = None) -> list[str]:
-    """Construit une liste de chaînes de caractères colorés (ANSI)"""
+    """Construit une liste de chaînes de caractères colorées (ANSI)"""
     str_color, number, text = [], "", symbol
     for i, color in enumerate(colors, 1):
-        red, green, blue = (int(color[j:j + 2], 16) for j in range(1, len(color), 2))
+        red, green, blue = color.to_rgb()
         if not symbol:
             number = f"[{i}] "
             text = color.name.capitalize()
