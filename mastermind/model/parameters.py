@@ -1,5 +1,6 @@
 from enum import Enum, StrEnum
 from pathlib import Path
+from typing import Self
 
 RESOURCE_DIR = Path(__file__).parent.parent.parent / "resource"
 SIZE_COMBINATION = 4
@@ -33,11 +34,21 @@ class Level(Enum):
     NORMAL = 6
     DIFFICILE = 8
 
+    def __str__(self):
+        return self.name.lower()
+
+    @classmethod
+    def from_string(cls, name: str) -> Self:
+        return next(attribut for attribut in cls if attribut.name.lower() == name)
+
 
 class Try(Enum):
     FACILE = 12
     NORMAL = 10
 
+    def __str__(self):
+        return self.name.lower()
 
-if __name__ == '__main__':
-    print(RESOURCE_DIR)
+    @classmethod
+    def from_string(cls, name: str) -> Self:
+        return next(attribut for attribut in cls if attribut.name.lower() == name)
