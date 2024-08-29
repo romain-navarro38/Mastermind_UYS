@@ -19,8 +19,8 @@ def init_cli_parser():
         description="Jeu de réflexion où le but est de deviner une combinaison de couleurs"
     )
     parser.add_argument('-m', '--mode',
-                        choices=['window', 'console'],
-                        default='window',
+                        choices=['fenetre', 'console'],
+                        default='fenetre',
                         help="Interface utilisateur")
     parser.add_argument('-l', '--level',
                         choices=list(str(level) for level in Level),
