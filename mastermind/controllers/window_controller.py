@@ -33,8 +33,10 @@ class WindowController:
         self.view.display_clues(clues)
         self.view.deactivate_row()
         if self.is_game_over():
+            self.view.game_in_progress = False
             self.view.display_game_over(self.is_win())
         else:
+            self.view.game_in_progress = True
             self.view.activate_next_try()
 
     def run(self) -> None:

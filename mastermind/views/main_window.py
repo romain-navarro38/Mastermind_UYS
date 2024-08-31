@@ -1,8 +1,9 @@
 from PySide6.QtCore import Qt, QSize, Signal
 from PySide6.QtGui import QIcon, QPixmap, QFont
-from PySide6.QtWidgets import QWidget, QLabel, QGridLayout, QVBoxLayout, QPushButton
+from PySide6.QtWidgets import QWidget, QLabel, QGridLayout, QVBoxLayout, QPushButton, QHBoxLayout
 
 from mastermind.model.parameters import Color, RESOURCE_DIR
+from mastermind.views.confirmation import ConfirmationMessage
 from mastermind.views.piece import PieceColor, PieceTry
 from mastermind.views.row import RowTry, Status, RowSecret
 from mastermind.views.spacer import Orientation, CustomSpacer
@@ -10,13 +11,13 @@ from mastermind.views.spacer import Orientation, CustomSpacer
 
 class MainWindow(QWidget):
     """Fenêtre principale"""
-
     evaluation_combination = Signal(list)
 
     def __init__(self) -> None:
         super().__init__()
         self.rows = {}
         self.pieces_colors = []
+        self.game_in_progress = False
 
     def setup_ui(self, max_tries: int, level: int, secret_combination: list[Color]) -> None:
         """Chargement, modification, disposition et connexion des composants"""
@@ -34,7 +35,6 @@ class MainWindow(QWidget):
             row = RowTry(self, i + 1)
             self.rows[i] = row
 
-        self.btn_rules = QPushButton("Règles du jeu")
         self.row_secret = RowSecret(secret_combination)
         self.vertical_spacer_1 = CustomSpacer(Orientation.VERTICAL)
         self.lab_select_color = QLabel("Sélectionner vos couleurs")
@@ -47,16 +47,16 @@ class MainWindow(QWidget):
         self.btn_try = QPushButton("Proposer")
         self.vertical_spacer_3 = CustomSpacer(Orientation.VERTICAL)
 
+        self.btn_rules = QPushButton("Règles du jeu")
+        self.btn_new_game = QPushButton("Nouvelle partie")
+        self.btn_quit = QPushButton("Quitter")
+
     def modify_widgets(self):
         self.rows[0].set_status(Status.ACTIVATED)
         self.num_row_enabled = 0
 
         font_bold = QFont()
         font_bold.setBold(True)
-
-        self.btn_rules.setFont(font_bold)
-        self.btn_rules.setStyleSheet("background-color: gray")
-        self.btn_rules.setMinimumSize(QSize(0, 30))
 
         self.lab_select_color.setStyleSheet("color: white;")
         self.lab_select_color.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -66,18 +66,30 @@ class MainWindow(QWidget):
         self.btn_try.setMinimumSize(QSize(0, 30))
         self.btn_try.setEnabled(False)
 
+        self.btn_rules.setFont(font_bold)
+        self.btn_rules.setStyleSheet("background-color: gray")
+        self.btn_rules.setMinimumSize(QSize(0, 30))
+
+        self.btn_new_game.setFont(font_bold)
+        self.btn_new_game.setStyleSheet("background-color: gray")
+        self.btn_new_game.setMinimumSize(QSize(0, 30))
+
+        self.btn_quit.setFont(font_bold)
+        self.btn_quit.setStyleSheet("background-color: gray")
+        self.btn_quit.setMinimumSize(QSize(0, 30))
+
     def create_layouts(self):
         self.main_layout = QGridLayout(self)
         self.tries_layout = QVBoxLayout()
         self.color_layout = QVBoxLayout()
         self.color_layout.setContentsMargins(20, 0, 0, 0)
         self.select_colors_layout = QGridLayout()
+        self.buttons_layout = QHBoxLayout()
 
     def add_widgets_to_layouts(self):
         for row in self.rows.values():
             self.tries_layout.addLayout(row)
 
-        self.color_layout.addWidget(self.btn_rules)
         self.color_layout.addSpacerItem(self.vertical_spacer_1)
         self.color_layout.addWidget(self.lab_select_color)
         self.color_layout.addLayout(self.select_colors_layout)
@@ -89,17 +101,34 @@ class MainWindow(QWidget):
         self.color_layout.addWidget(self.btn_try)
         self.color_layout.addSpacerItem(self.vertical_spacer_3)
 
+        self.buttons_layout.addWidget(self.btn_rules)
+        self.buttons_layout.addWidget(self.btn_new_game)
+        self.buttons_layout.addWidget(self.btn_quit)
+
         self.main_layout.addLayout(self.tries_layout, 0, 0, 1, 1)
         self.main_layout.addLayout(self.color_layout, 0, 1, 1, 1)
         self.main_layout.addLayout(self.row_secret, 1, 0, 1, 2)
+        self.main_layout.addLayout(self.buttons_layout, 2, 0, 1, 2)
 
     def setup_connections(self):
-        self.btn_rules.clicked.connect(self.open_window_rules)
-
         for piece_color in self.pieces_colors:
             piece_color.clicked.connect(self.positioned_color)
 
         self.btn_try.clicked.connect(self.validate_combinaison)
+
+        self.btn_rules.clicked.connect(self.open_window_rules)
+        # self.btn_new_game.clicked.connect()
+        self.btn_quit.clicked.connect(self.close)
+
+    def _interrupt(self) -> bool:
+        dialog = ConfirmationMessage(self)
+        if dialog.exec():
+            return True
+        return False
+
+    def closeEvent(self, event) -> None:
+        if self.game_in_progress:
+            event.accept() if self._interrupt() else event.ignore()
 
     def piece_selected(self, piece_try: PieceTry) -> None:
         """Le pion cliqué passe à l'état sélectionné. Les autres
