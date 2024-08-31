@@ -53,7 +53,6 @@ def main() -> None:
     """Point d'entrée du programme"""
     parser = init_cli_parser()
     args = parser.parse_args()
-    print(args)
     model = Mastermind(Level.from_string(args.level),
                        Try.from_string(args.tries))
     run_console(model) if args.mode == 'console' else run_window(model)
