@@ -87,6 +87,7 @@ class MainWindow(QWidget):
         self.color_layout.setContentsMargins(20, 0, 0, 0)
         self.select_colors_layout = QGridLayout()
         self.buttons_layout = QHBoxLayout()
+        self.buttons_layout.setContentsMargins(0, 20, 0, 0)
 
     def add_widgets_to_layouts(self):
         for row in self.rows.values():
