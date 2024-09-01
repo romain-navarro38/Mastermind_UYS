@@ -1,6 +1,6 @@
 from random import choice, shuffle
 
-from mastermind.model.parameters import Level, Color, Try, SIZE_COMBINATION
+from mastermind.utils.parameters import Level, Color, Try, SIZE_COMBINATION
 
 
 def shuffle_items_list(list_color: list) -> list:

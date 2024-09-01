@@ -2,7 +2,7 @@ from PySide6.QtCore import Qt, QSize, Signal, QEvent
 from PySide6.QtGui import QIcon, QPixmap, QFont, QKeyEvent
 from PySide6.QtWidgets import QWidget, QLabel, QGridLayout, QVBoxLayout, QPushButton, QHBoxLayout
 
-from mastermind.model.parameters import Color, RESOURCE_DIR, Neighbor
+from mastermind.utils.parameters import Color, RESOURCE_DIR, Neighbor
 from mastermind.views.confirmation import ConfirmationMessage
 from mastermind.views.piece import PieceColor, PieceTry
 from mastermind.views.row import RowTry, Status, RowSecret

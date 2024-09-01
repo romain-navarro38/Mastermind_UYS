@@ -4,7 +4,7 @@ from PySide6.QtCore import Signal, Qt
 from PySide6.QtGui import QMouseEvent
 from PySide6.QtWidgets import QLabel
 
-from mastermind.model.parameters import Color
+from mastermind.utils.parameters import Color
 
 
 class PieceSize(Enum):

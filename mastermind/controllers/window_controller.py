@@ -2,7 +2,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QKeyEvent
 
 from mastermind.model.game import Mastermind
-from mastermind.model.parameters import Color, Neighbor
+from mastermind.utils.parameters import Color, Neighbor
 from mastermind.views.main_window import MainWindow
 
 
