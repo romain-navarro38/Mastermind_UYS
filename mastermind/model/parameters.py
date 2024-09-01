@@ -1,4 +1,4 @@
-from enum import Enum, StrEnum
+from enum import Enum, StrEnum, auto
 from pathlib import Path
 from typing import Self
 
@@ -34,6 +34,14 @@ class Color(StrEnum):
         """Retourne la couleur au format RGB"""
         return (int(self.value[i:i + 2], 16) for i in range(1, len(self.value), 2))
 
+    @classmethod
+    def from_index(cls, index: int) -> Self:
+        return list(cls)[index]
+
+    def get_opposite(self) -> str:
+        """Retourne la couleur opposée au format hexadécimal"""
+        return f"#{''.join([f'{hex(255 - c)[2:]:02}' for c in self.to_rgb()])}"
+
 
 class Level(Enum):
     """Classe Enum représentant le nombre de couleurs disponible
@@ -48,6 +56,13 @@ class Level(Enum):
     @classmethod
     def from_string(cls, name: str) -> Self:
         return next(attribute for attribute in cls if attribute.name.lower() == name)
+
+
+class Neighbor(Enum):
+    """Classe Enum représentant le pion voisin,
+    à droite ou à gauche, dans une ligne d'essai"""
+    RIGHT = auto()
+    LEFT = auto()
 
 
 class Try(Enum):
