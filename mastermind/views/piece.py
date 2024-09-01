@@ -41,6 +41,7 @@ class PieceClue(Piece):
 class PieceColor(Piece):
     """Label cliquable retournant sa propre couleur."""
     clicked = Signal(Color)
+    number = 0
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -48,11 +49,19 @@ class PieceColor(Piece):
         self.setMinimumSize(PieceSize.COLOR.value, PieceSize.COLOR.value)
         self.radius = PieceSize.COLOR.value // 2
         self.set_color(self.color)
+        PieceColor.number += 1
+        self.setText(f"{PieceColor.number}")
+        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
     def set_color(self, color: Color) -> None:
         """Associe une Color au pion et lui applique"""
         self.color = color
-        self.setStyleSheet(f"border-radius: {self.radius}px;background-color: {color.value};")
+        self.setStyleSheet(
+            f"""border-radius: {self.radius}px;
+            background-color: {color.value};
+            font-size: 14px;
+            font-weight: bold;
+            color: {color.get_opposite()}""")
 
     def mousePressEvent(self, ev: QMouseEvent) -> None:
         """Emission du signal clicked, portant la couleur du pion cliqué"""
@@ -87,7 +96,7 @@ class PieceTry(Piece):
         self.setMinimumSize(PieceSize.TRY.value, PieceSize.TRY.value)
         self.radius = PieceSize.TRY.value // 2
         self.is_selected = False
-        self.next_piece = None
+        self.next_piece = self.previous_piece = None
 
     def set_color(self, color: Color) -> None:
         """Défini et applique une couleur au pion et ajoute une bordure
@@ -111,7 +120,7 @@ class PieceTry(Piece):
         """Emission du signal clicked"""
         self.clicked.emit()
 
-    def setEnabled(self, arg__1) -> None:
+    def setEnabled(self, arg__1: bool) -> None:
         """Défini l'état d'activation (True ou False) du pion"""
         super().setEnabled(arg__1)
         if not arg__1:
