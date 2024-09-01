@@ -1,9 +1,8 @@
-from sys import exit
-
-from PySide6.QtWidgets import QApplication
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QKeyEvent
 
 from mastermind.model.game import Mastermind
-from mastermind.model.parameters import Color
+from mastermind.utils.parameters import Color, Neighbor
 from mastermind.views.main_window import MainWindow
 
 
@@ -12,6 +11,7 @@ class WindowController:
         self.model = model
         self.view = view
         self.view.evaluation_combination.connect(self.evaluate_combination)
+        self.view.event_keyboard.connect(self.parse_input)
 
     def load_ui(self) -> None:
         """Chargement des composants de la fenêtre"""
@@ -44,11 +44,23 @@ class WindowController:
         self.load_ui()
         self.view.show()
 
-
-if __name__ == '__main__':
-    app = QApplication()
-    m = Mastermind()
-    v = MainWindow()
-    c = WindowController(m, v)
-    c.run()
-    exit(app.exec())
+    def parse_input(self, event: QKeyEvent) -> None:
+        """Déclenche, sur la vue, l'action associée à l'entrée clavier"""
+        if event.modifiers() == Qt.ControlModifier:
+            match event.key():
+                case Qt.Key_Q:
+                    self.view.close()
+                case Qt.Key_N:
+                    pass
+                case Qt.Key_R:
+                    self.view.open_window_rules()
+        elif not self.is_game_over():
+            match event.key():
+                case num if 49 <= num <= 48 + self.model.level.value:
+                    self.view.positioned_color(Color.from_index(event.key() - 49))
+                case Qt.Key_Right:
+                    self.view.rows[self.view.num_row_enabled].select_neighbor_try_piece(Neighbor.RIGHT)
+                case Qt.Key_Left:
+                    self.view.rows[self.view.num_row_enabled].select_neighbor_try_piece(Neighbor.LEFT)
+                case Qt.Key_Return | Qt.Key_Enter:
+                    self.view.validate_combinaison()

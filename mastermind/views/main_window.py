@@ -1,8 +1,8 @@
-from PySide6.QtCore import Qt, QSize, Signal
-from PySide6.QtGui import QIcon, QPixmap, QFont
+from PySide6.QtCore import Qt, QSize, Signal, QEvent
+from PySide6.QtGui import QIcon, QPixmap, QFont, QKeyEvent
 from PySide6.QtWidgets import QWidget, QLabel, QGridLayout, QVBoxLayout, QPushButton, QHBoxLayout
 
-from mastermind.model.parameters import Color, RESOURCE_DIR
+from mastermind.utils.parameters import Color, RESOURCE_DIR, Neighbor
 from mastermind.views.confirmation import ConfirmationMessage
 from mastermind.views.piece import PieceColor, PieceTry
 from mastermind.views.row import RowTry, Status, RowSecret
@@ -12,10 +12,11 @@ from mastermind.views.spacer import Orientation, CustomSpacer
 class MainWindow(QWidget):
     """Fenêtre principale"""
     evaluation_combination = Signal(list)
+    event_keyboard = Signal(QKeyEvent)
 
     def __init__(self) -> None:
         super().__init__()
-        self.rows = {}
+        self.rows: dict[int, RowTry] = {}
         self.pieces_colors = []
         self.game_in_progress = False
 
@@ -29,6 +30,7 @@ class MainWindow(QWidget):
         self.create_layouts()
         self.add_widgets_to_layouts()
         self.setup_connections()
+        self.setFocus()
 
     def create_widgets(self, max_tries: int, level: int, secret_combination: list[Color]):
         for i in range(max_tries):
@@ -117,18 +119,28 @@ class MainWindow(QWidget):
         self.btn_try.clicked.connect(self.validate_combinaison)
 
         self.btn_rules.clicked.connect(self.open_window_rules)
-        # self.btn_new_game.clicked.connect()
+        self.btn_new_game.clicked.connect(self.new_game)
         self.btn_quit.clicked.connect(self.close)
 
-    def _interrupt(self) -> bool:
+    def confirmation_interruption(self) -> bool:
+        """Retourne le choix de l'utilisateur via une boite de dialogue
+        d'interrompre la partie en cours"""
         dialog = ConfirmationMessage(self)
         if dialog.exec():
             return True
+        self.setFocus()
         return False
 
-    def closeEvent(self, event) -> None:
+    def closeEvent(self, event: QEvent) -> None:
+        """Gère les événements de fermeture.
+        Demande confirmation si une partie est en cours"""
         if self.game_in_progress:
-            event.accept() if self._interrupt() else event.ignore()
+            event.accept() if self.confirmation_interruption() else event.ignore()
+
+    def keyPressEvent(self, event: QKeyEvent) -> None:
+        """Émet le signal event_keyboard avec la ou les touches
+        tapées par l'utilisateur"""
+        self.event_keyboard.emit(event)
 
     def piece_selected(self, piece_try: PieceTry) -> None:
         """Le pion cliqué passe à l'état sélectionné. Les autres
@@ -145,12 +157,13 @@ class MainWindow(QWidget):
             if try_layout.itemAt(i).widget().is_selected:
                 try_layout.itemAt(i).widget().set_color(color)
                 break
-        self.rows[self.num_row_enabled].select_next_try_piece()
+        self.rows[self.num_row_enabled].select_neighbor_try_piece(Neighbor.RIGHT)
         self.btn_try.setEnabled(self.is_active_row_valid())
 
     def validate_combinaison(self) -> None:
         """Émet dans un signal la combinaison de la ligne active"""
         self.evaluation_combination.emit(self.get_try_combination())
+        self.setFocus()
 
     def deactivate_row(self):
         """Désactivation de la ligne active"""
@@ -183,5 +196,8 @@ class MainWindow(QWidget):
         secrète est révélée."""
         self.row_secret.reveal_combination(is_win)
 
+    def new_game(self) -> None:
+        self.setFocus()
+
     def open_window_rules(self) -> None:
-        pass
+        self.setFocus()

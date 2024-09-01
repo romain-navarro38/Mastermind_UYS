@@ -1,5 +1,5 @@
 from mastermind.model.game import Mastermind
-from mastermind.model.parameters import Color, SIZE_COMBINATION, SQUARE, DOT, PREAMBLE
+from mastermind.utils.parameters import Color, SIZE_COMBINATION, SQUARE, DOT, PREAMBLE
 from mastermind.views.console import Console
 
 

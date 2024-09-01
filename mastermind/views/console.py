@@ -1,4 +1,4 @@
-from mastermind.model.parameters import RESET_COLOR
+from mastermind.utils.parameters import RESET_COLOR
 
 
 class Console:
