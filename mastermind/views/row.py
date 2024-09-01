@@ -1,15 +1,16 @@
-from enum import StrEnum, auto
+from enum import Enum, auto
 from functools import partial
 
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QWidget, QSizePolicy, QFrame, QLabel
 
-from mastermind.model.parameters import Color, SIZE_COMBINATION
+from mastermind.model.parameters import Color, SIZE_COMBINATION, Neighbor
 from mastermind.views.piece import PieceClue, PieceTry, PieceSecret
 from mastermind.views.spacer import CustomSpacer, Orientation
 
 
-class Status(StrEnum):
+class Status(Enum):
+    """Classe Enum représentant l'état d'une ligne d'essai"""
     ON_HOLD = auto()
     ACTIVATED = auto()
     DEACTIVATED = auto()
@@ -17,8 +18,8 @@ class Status(StrEnum):
 
 class VerticalSeparator(QFrame):
     """Ligne verticale servant de séparation entre les éléments de l'UI"""
-    def __init__(self, enabled: bool = False, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
+    def __init__(self, enabled: bool = False) -> None:
+        super().__init__()
 
         self.set_color(enabled)
         self.setFrameShape(QFrame.Shape.VLine)
@@ -33,8 +34,8 @@ class VerticalSeparator(QFrame):
 
 class Row(QHBoxLayout):
     """Ligne verticale pour accueillir des pions (Piece)"""
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
+    def __init__(self) -> None:
+        super().__init__()
 
         self.title = QLabel('')
         self.title.setStyleSheet("color: black;")
@@ -43,22 +44,21 @@ class Row(QHBoxLayout):
         self.clues_layout = QGridLayout()
 
 
-# noinspection PyTypeChecker
 class RowSecret(Row):
     """Représente la ligne contenant la combinaison secrète."""
-    def __init__(self, secret_colours: list[Color], *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
+    def __init__(self, secret_colours: list[Color]) -> None:
+        super().__init__()
 
         self.title.setStyleSheet("color: white;")
         self.title.setText("?")
         self.addWidget(self.title)
-        separator1 = VerticalSeparator(Color.BLANC)
+        separator1 = VerticalSeparator(True)
         self.addWidget(separator1)
         for i in range(SIZE_COMBINATION):
             piece_secret = PieceSecret(secret_colours[i])
             self.colors_layout.addWidget(piece_secret)
         self.addLayout(self.colors_layout)
-        separator2 = VerticalSeparator(Color.BLANC)
+        separator2 = VerticalSeparator(True)
         self.addWidget(separator2)
         self.game_over = QLabel('')
         self.game_over.setStyleSheet("color: white;")
@@ -77,18 +77,18 @@ class RowSecret(Row):
         self.game_over.setText("Gagné" if winner else "Perdu")
 
 
-# noinspection PyUnresolvedReferences
 class RowTry(Row):
     """Représente une ligne d'essai."""
-    def __init__(self, window: QWidget, row_number: int, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
+    def __init__(self, parent: QWidget, row_number: int) -> None:
+        super().__init__()
 
         self.title.setText(f"{row_number}")
         pieces_try = [PieceTry(Color.NOIR) for _ in range(SIZE_COMBINATION)]
         for i in range(SIZE_COMBINATION):
             piece_try = pieces_try[i]
             piece_try.next_piece = pieces_try[i + 1 if i < SIZE_COMBINATION - 1 else 0]
-            piece_try.clicked.connect(partial(window.piece_selected, piece_try))
+            piece_try.previous_piece = pieces_try[i - 1 if i > 0 else SIZE_COMBINATION - 1]
+            piece_try.clicked.connect(partial(parent.piece_selected, piece_try))
             self.colors_layout.addWidget(piece_try)
             piece_clue = PieceClue()
             self.clues_layout.addWidget(piece_clue, i % 2, i // 2, 1, 1)
@@ -122,13 +122,19 @@ class RowTry(Row):
         if status == Status.ACTIVATED:
             self.colors_layout.itemAt(0).widget().set_selected(True)
 
-    def select_next_try_piece(self) -> None:
-        """Passe à l'état 'sélectionné' le pion qui suit celui
+    def select_neighbor_try_piece(self, neighbor: Neighbor) -> None:
+        """Passe à l'état 'sélectionné' le pion qui suit ou précède celui
         qui est actuellement 'sélectionné' dans la ligne."""
-        piece_try: PieceTry = next(
-            (self.colors_layout.itemAt(i).widget() for i in range(self.colors_layout.count())
+        direction = (range(self.colors_layout.count())
+                     if neighbor == Neighbor.RIGHT
+                     else range(self.colors_layout.count() - 1, -1, -1))
+        piece_try: PieceTry | None = next(
+            (self.colors_layout.itemAt(i).widget() for i in direction
              if self.colors_layout.itemAt(i).widget().is_selected),
             None
         )
-        piece_try.set_selected(False)
-        piece_try.next_piece.set_selected(True)
+        if piece_try:
+            piece_try.set_selected(False)
+            (piece_try.next_piece.set_selected(True)
+             if neighbor == Neighbor.RIGHT
+             else piece_try.previous_piece.set_selected(True))
