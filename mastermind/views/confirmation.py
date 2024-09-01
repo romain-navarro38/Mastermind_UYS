@@ -16,14 +16,21 @@ class ConfirmationMessage(QDialog):
                 color: white;
             }
             #btn_yes {
-                background-color: #f44336; /* Red */
+                background-color: #F57C72; /* Red */
                 color: white;
-                font-size: 14px;
+                font-size: 12px;
             }
             #btn_no {
-                background-color: #4CAF50; /* Green */
+                background-color: #86CC89; /* Green */
                 color: white;
-                font-size: 14px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+            #btn_yes:focus {
+                background-color: red;
+            }
+            #btn_no:focus {
+                background-color: green;
             }
             #btn_yes:hover {
                 background-color: red;
@@ -32,6 +39,7 @@ class ConfirmationMessage(QDialog):
                 background-color: green;
             }
         """)
+        self.btn_no.setFocus()
 
     def setup_ui(self):
         self.create_widgets()
@@ -48,7 +56,9 @@ class ConfirmationMessage(QDialog):
 
     def modify_widgets(self):
         self.btn_yes.setObjectName("btn_yes")
+        self.btn_yes.setText("Oui")
         self.btn_no.setObjectName("btn_no")
+        self.btn_no.setText("Non")
 
     def create_layouts(self):
         self.layout = QVBoxLayout()
