@@ -2,8 +2,9 @@ from PySide6.QtCore import Qt, QSize, Signal, QEvent
 from PySide6.QtGui import QIcon, QPixmap, QFont, QKeyEvent
 from PySide6.QtWidgets import QWidget, QLabel, QGridLayout, QVBoxLayout, QPushButton, QHBoxLayout
 
-from mastermind.utils.parameters import Color, RESOURCE_DIR, Neighbor
+from mastermind.utils.parameters import Color, RESOURCE_DIR, Neighbor, Level, Try
 from mastermind.views.confirmation import ConfirmationMessage
+from mastermind.views.new_game import NewGame
 from mastermind.views.piece import PieceColor, PieceTry
 from mastermind.views.row import RowTry, Status, RowSecret
 from mastermind.views.spacer import Orientation, CustomSpacer
@@ -13,6 +14,7 @@ class MainWindow(QWidget):
     """Fenêtre principale"""
     evaluation_combination = Signal(list)
     event_keyboard = Signal(QKeyEvent)
+    restart = Signal(Level, Try)
 
     def __init__(self) -> None:
         super().__init__()
@@ -198,6 +200,11 @@ class MainWindow(QWidget):
         self.row_secret.reveal_combination(is_win)
 
     def new_game(self) -> None:
+        if self.game_in_progress and not self.confirmation_interruption():
+            return
+        dialog = NewGame(self)
+        if dialog.exec():
+            self.restart.emit(*dialog.get_params_new_game())
         self.setFocus()
 
     def open_window_rules(self) -> None:
