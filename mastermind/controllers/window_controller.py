@@ -2,7 +2,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QKeyEvent
 
 from mastermind.model.game import Mastermind
-from mastermind.utils.parameters import Color, Neighbor
+from mastermind.utils.parameters import Color, Neighbor, Level, Try
 from mastermind.views.main_window import MainWindow
 
 
@@ -12,6 +12,7 @@ class WindowController:
         self.view = view
         self.view.evaluation_combination.connect(self.evaluate_combination)
         self.view.event_keyboard.connect(self.parse_input)
+        self.view.restart.connect(self.new_game)
 
     def load_ui(self) -> None:
         """Chargement des composants de la fenêtre"""
@@ -64,3 +65,6 @@ class WindowController:
                     self.view.rows[self.view.num_row_enabled].select_neighbor_try_piece(Neighbor.LEFT)
                 case Qt.Key_Return | Qt.Key_Enter:
                     self.view.validate_combinaison()
+
+    def new_game(self, level: Level, tries: Try) -> None:
+        print(f"try: {tries}, couleur: {level}")
