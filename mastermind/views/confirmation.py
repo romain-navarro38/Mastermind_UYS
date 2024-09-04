@@ -11,31 +11,29 @@ class ConfirmationMessage(QDialog):
             QDialog {
                 background-color: blue;
             }
+            
             QLabel {
                 background-color: blue;
                 color: white;
             }
-            #btn_yes {
-                background-color: #F57C72; /* Red */
+            
+            #btn_red {
+                background-color: #f44336;
                 color: white;
-                font-size: 12px;
+                font-size: 14px;
             }
-            #btn_no {
-                background-color: #86CC89; /* Green */
+            
+            #btn_green {
+                background-color: #4CAF50;
                 color: white;
-                font-size: 12px;
-                font-weight: bold;
+                font-size: 14px;
             }
-            #btn_yes:focus {
+            
+            #btn_red:hover {
                 background-color: red;
             }
-            #btn_no:focus {
-                background-color: green;
-            }
-            #btn_yes:hover {
-                background-color: red;
-            }
-            #btn_no:hover {
+            
+            #btn_green:hover {
                 background-color: green;
             }
         """)
@@ -55,9 +53,9 @@ class ConfirmationMessage(QDialog):
         self.btn_no = self.btn_box.button(QDialogButtonBox.No)
 
     def modify_widgets(self):
-        self.btn_yes.setObjectName("btn_yes")
+        self.btn_yes.setObjectName("btn_red")
         self.btn_yes.setText("Oui")
-        self.btn_no.setObjectName("btn_no")
+        self.btn_no.setObjectName("btn_green")
         self.btn_no.setText("Non")
 
     def create_layouts(self):
