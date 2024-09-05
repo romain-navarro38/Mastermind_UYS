@@ -4,6 +4,7 @@ from typing import Self
 
 RESOURCE_DIR = Path(__file__).parent.parent.parent / "resource"
 ICON_DIR = RESOURCE_DIR / "icons"
+STYLE_DIR = RESOURCE_DIR / "styles"
 SIZE_COMBINATION = 4
 SQUARE = "\u25A0"  # correspondant à ■
 DOT = "\u25CF"  # correspondant à ●
@@ -15,6 +16,11 @@ A chaque couleur présente mais mal positionnée, vous aurez en retour un indica
 
 Entrez votre combinaison secrète en utilisant les chiffres des couleurs disponibles.
 """
+
+
+def get_style_sheet(filename: str) -> str:
+    with open(STYLE_DIR / filename, 'r', encoding='utf-8') as f:
+        return f.read()
 
 
 class Color(StrEnum):

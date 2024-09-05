@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QLabel, QComboBox, QPushButton, QGridLayout, QDialog, QWidget
 
-from mastermind.utils.parameters import Level, Try
+from mastermind.utils.parameters import Level, Try, get_style_sheet
 
 
 class NewGame(QDialog):
@@ -13,67 +13,7 @@ class NewGame(QDialog):
         self.tries = old_tries
         self.setWindowTitle("Nouvelle partie")
         self.setup_ui()
-        self.setStyleSheet("""
-            QComboBox {
-                border: 1px solid gray;
-                border-radius: 3px;
-                padding: 1px 18px 1px 10px;
-                min-width: 6em;
-                background-color: yellow;
-            }
-            
-            QComboBox::drop-down {
-                subcontrol-origin: padding;
-                subcontrol-position: top right;
-                width: 15px;
-                border-left-width: 1px;
-                border-left-color: darkgray;
-                border-left-style: solid; /* just a single line */
-                border-top-right-radius: 3px; /* same radius as the QComboBox */
-                border-bottom-right-radius: 3px;
-            }
-            
-            QComboBox::down-arrow:on { /* shift the arrow when popup is open */
-                top: 1px;
-                left: 1px;
-            }
-            
-            QAbstractItemView {
-                border: 2px solid darkgray;
-                selection-background-color: lightgray;
-                background-color: yellow;
-                color: black;
-            }
-            
-            QDialog {
-                background-color: blue;
-            }
-            
-            QLabel {
-                background-color: blue;
-                color: white;
-            }
-            
-            #btn_red {
-                background-color: #f44336;
-                color: white;
-                font-size: 14px;
-            }
-            
-            #btn_green {
-                background-color: #4CAF50;
-                color: white;
-                font-size: 14px;
-            }
-            
-            #btn_red:hover {
-                background-color: red;
-            }
-            
-            #btn_green:hover {
-                background-color: green;
-            }
-        """)
+        self.setStyleSheet(get_style_sheet("style_qdialog.qss"))
 
     def setup_ui(self) -> None:
         """Chargement, modification, disposition et connexion des composants"""

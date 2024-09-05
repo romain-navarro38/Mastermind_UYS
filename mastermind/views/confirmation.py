@@ -1,5 +1,7 @@
 from PySide6.QtWidgets import QWidget, QDialog, QLabel, QDialogButtonBox, QVBoxLayout
 
+from mastermind.utils.parameters import get_style_sheet
+
 
 class ConfirmationMessage(QDialog):
     def __init__(self, parent: QWidget = None):
@@ -7,36 +9,7 @@ class ConfirmationMessage(QDialog):
 
         self.setWindowTitle("Confirmation")
         self.setup_ui()
-        self.setStyleSheet("""
-            QDialog {
-                background-color: blue;
-            }
-            
-            QLabel {
-                background-color: blue;
-                color: white;
-            }
-            
-            #btn_red {
-                background-color: #f44336;
-                color: white;
-                font-size: 14px;
-            }
-            
-            #btn_green {
-                background-color: #4CAF50;
-                color: white;
-                font-size: 14px;
-            }
-            
-            #btn_red:hover {
-                background-color: red;
-            }
-            
-            #btn_green:hover {
-                background-color: green;
-            }
-        """)
+        self.setStyleSheet(get_style_sheet("style_qdialog.qss"))
         self.btn_no.setFocus()
 
     def setup_ui(self):
