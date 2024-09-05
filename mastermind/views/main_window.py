@@ -13,18 +13,20 @@ class MainWindow(QWidget):
     """Fenêtre principale"""
     evaluation_combination = Signal(list)
     event_keyboard = Signal(QKeyEvent)
+    restart = Signal()
 
     def __init__(self) -> None:
         super().__init__()
         self.rows: dict[int, RowTry] = {}
         self.pieces_colors = []
         self.game_in_progress = False
-
-    def setup_ui(self, max_tries: int, level: int, secret_combination: list[Color]) -> None:
-        """Chargement, modification, disposition et connexion des composants"""
+        PieceColor.number = 0
         self.setWindowTitle("Devine la combinaison secrète - Up Your Skills")
         self.setWindowIcon((QIcon(QPixmap(RESOURCE_DIR / "logo.ico"))))
         self.setStyleSheet("background-color: black;")
+
+    def setup_ui(self, max_tries: int, level: int, secret_combination: list[Color]) -> None:
+        """Chargement, modification, disposition et connexion des composants"""
         self.create_widgets(max_tries, level, secret_combination)
         self.modify_widgets()
         self.create_layouts()
@@ -32,7 +34,9 @@ class MainWindow(QWidget):
         self.setup_connections()
         self.setFocus()
 
-    def create_widgets(self, max_tries: int, level: int, secret_combination: list[Color]):
+    def create_widgets(self, max_tries: int,
+                       level: int,
+                       secret_combination: list[Color]) -> None:
         for i in range(max_tries):
             row = RowTry(self, i + 1)
             self.rows[i] = row
@@ -53,7 +57,7 @@ class MainWindow(QWidget):
         self.btn_new_game = QPushButton("Nouvelle partie")
         self.btn_quit = QPushButton("Quitter")
 
-    def modify_widgets(self):
+    def modify_widgets(self) -> None:
         self.rows[0].set_status(Status.ACTIVATED)
         self.num_row_enabled = 0
 
@@ -80,7 +84,7 @@ class MainWindow(QWidget):
         self.btn_quit.setStyleSheet("background-color: gray")
         self.btn_quit.setMinimumSize(QSize(0, 30))
 
-    def create_layouts(self):
+    def create_layouts(self) -> None:
         self.main_layout = QGridLayout(self)
         self.tries_layout = QVBoxLayout()
         self.color_layout = QVBoxLayout()
@@ -89,7 +93,7 @@ class MainWindow(QWidget):
         self.buttons_layout = QHBoxLayout()
         self.buttons_layout.setContentsMargins(0, 20, 0, 0)
 
-    def add_widgets_to_layouts(self):
+    def add_widgets_to_layouts(self) -> None:
         for row in self.rows.values():
             self.tries_layout.addLayout(row)
 
@@ -113,7 +117,7 @@ class MainWindow(QWidget):
         self.main_layout.addLayout(self.row_secret, 1, 0, 1, 2)
         self.main_layout.addLayout(self.buttons_layout, 2, 0, 1, 2)
 
-    def setup_connections(self):
+    def setup_connections(self) -> None:
         for piece_color in self.pieces_colors:
             piece_color.clicked.connect(self.positioned_color)
 
@@ -166,7 +170,7 @@ class MainWindow(QWidget):
         self.evaluation_combination.emit(self.get_try_combination())
         self.setFocus()
 
-    def deactivate_row(self):
+    def deactivate_row(self) -> None:
         """Désactivation de la ligne active"""
         self.rows[self.num_row_enabled].set_status(Status.DEACTIVATED)
         self.btn_try.setEnabled(False)
@@ -198,7 +202,8 @@ class MainWindow(QWidget):
         self.row_secret.reveal_combination(is_win)
 
     def new_game(self) -> None:
-        self.setFocus()
+        """Emission du signal pour recommencer une partie"""
+        self.restart.emit()
 
     def open_window_rules(self) -> None:
         self.setFocus()
