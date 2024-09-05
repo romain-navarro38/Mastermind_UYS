@@ -63,5 +63,3 @@ if __name__ == '__main__':
 
 # TODO:
 #  - Fenêtre règles du jeu
-#  - Possibilité changement difficulté (nombre d'essai, nombre de couleur)
-#  - Proposer de recommencer une partie
