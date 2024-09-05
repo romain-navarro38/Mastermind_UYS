@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Self
 
 RESOURCE_DIR = Path(__file__).parent.parent.parent / "resource"
+ICON_DIR = RESOURCE_DIR / "icons"
 SIZE_COMBINATION = 4
 SQUARE = "\u25A0"  # correspondant à ■
 DOT = "\u25CF"  # correspondant à ●
