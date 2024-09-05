@@ -8,6 +8,18 @@ from mastermind.views.piece import PieceColor, PieceTry
 from mastermind.views.row import RowTry, Status, RowSecret
 from mastermind.views.spacer import Orientation, CustomSpacer
 
+font_bold = QFont()
+font_bold.setBold(True)
+
+
+class CustomButton(QPushButton):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.setFont(font_bold)
+        self.setStyleSheet("background-color: #d0d0d0")
+        self.setMinimumSize(QSize(0, 30))
+
 
 class MainWindow(QWidget):
     """Fenêtre principale"""
@@ -50,39 +62,21 @@ class MainWindow(QWidget):
             self.pieces_colors.append(piece_color)
 
         self.vertical_spacer_2 = CustomSpacer(Orientation.VERTICAL)
-        self.btn_try = QPushButton("Proposer")
+        self.btn_try = CustomButton("Proposer")
         self.vertical_spacer_3 = CustomSpacer(Orientation.VERTICAL)
 
-        self.btn_rules = QPushButton("Règles du jeu")
-        self.btn_new_game = QPushButton("Nouvelle partie")
-        self.btn_quit = QPushButton("Quitter")
+        self.btn_rules = CustomButton("Règles du jeu")
+        self.btn_new_game = CustomButton("Nouvelle partie")
+        self.btn_quit = CustomButton("Quitter")
 
     def modify_widgets(self) -> None:
         self.rows[0].set_status(Status.ACTIVATED)
         self.num_row_enabled = 0
 
-        font_bold = QFont()
-        font_bold.setBold(True)
-
         self.lab_select_color.setStyleSheet("color: white;")
         self.lab_select_color.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.btn_try.setFont(font_bold)
-        self.btn_try.setStyleSheet("background-color: gray")
-        self.btn_try.setMinimumSize(QSize(0, 30))
         self.btn_try.setEnabled(False)
-
-        self.btn_rules.setFont(font_bold)
-        self.btn_rules.setStyleSheet("background-color: gray")
-        self.btn_rules.setMinimumSize(QSize(0, 30))
-
-        self.btn_new_game.setFont(font_bold)
-        self.btn_new_game.setStyleSheet("background-color: gray")
-        self.btn_new_game.setMinimumSize(QSize(0, 30))
-
-        self.btn_quit.setFont(font_bold)
-        self.btn_quit.setStyleSheet("background-color: gray")
-        self.btn_quit.setMinimumSize(QSize(0, 30))
 
     def create_layouts(self) -> None:
         self.main_layout = QGridLayout(self)
