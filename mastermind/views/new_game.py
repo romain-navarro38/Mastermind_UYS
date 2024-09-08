@@ -13,7 +13,7 @@ class NewGame(QDialog):
         self.tries = old_tries
         self.setWindowTitle("Nouvelle partie")
         self.setup_ui()
-        self.setStyleSheet(get_resource(STYLE_DIR / "style_qdialog.qss"))
+        self.setStyleSheet(get_resource(STYLE_DIR / "qdialog.qss"))
 
     def setup_ui(self) -> None:
         """Chargement, modification, disposition et connexion des composants"""

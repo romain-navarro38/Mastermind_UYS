@@ -9,7 +9,7 @@ class ConfirmationMessage(QDialog):
 
         self.setWindowTitle("Confirmation")
         self.setup_ui()
-        self.setStyleSheet(get_resource(STYLE_DIR / "style_qdialog.qss"))
+        self.setStyleSheet(get_resource(STYLE_DIR / "qdialog.qss"))
         self.btn_no.setFocus()
 
     def setup_ui(self):
