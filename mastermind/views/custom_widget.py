@@ -17,7 +17,8 @@ class Orientation(Enum):
 
 
 class CustomButton(QPushButton):
-    def __init__(self, *args, **kwargs):
+    """QPushButton personnalisé"""
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         self.setFont(font_bold)
@@ -27,7 +28,7 @@ class CustomButton(QPushButton):
 
 class CustomSpacer(QSpacerItem):
     """Défini un QSpacerItem en fonction de l'orientation voulue"""
-    def __init__(self, orientation: Orientation):
+    def __init__(self, orientation: Orientation) -> None:
         if orientation == Orientation.VERTICAL:
             super().__init__(20, 40, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         else:
