@@ -6,7 +6,7 @@ from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QWidget, QSizePolicy, QF
 
 from mastermind.utils.parameters import Color, SIZE_COMBINATION, Neighbor
 from mastermind.views.piece import PieceClue, PieceTry, PieceSecret
-from mastermind.views.spacer import CustomSpacer, Orientation
+from mastermind.views.custom_widget import CustomSpacer, Orientation
 
 
 class Status(Enum):

@@ -6,7 +6,7 @@ from mastermind.utils.parameters import Color, ICON_DIR, Neighbor
 from mastermind.views.confirmation import ConfirmationMessage
 from mastermind.views.piece import PieceColor, PieceTry
 from mastermind.views.row import RowTry, Status, RowSecret
-from mastermind.views.spacer import Orientation, CustomSpacer, CustomButton
+from mastermind.views.custom_widget import Orientation, CustomSpacer, CustomButton
 
 
 class MainWindow(QWidget):
