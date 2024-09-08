@@ -5,7 +5,7 @@ from mastermind.model.game import Mastermind
 from mastermind.utils.parameters import Color, Neighbor
 from mastermind.views.main_window import MainWindow
 from mastermind.views.new_game import NewGame
-from mastermind.views.rules import HelpWindow
+from mastermind.views.help import HelpWindow
 
 
 class WindowController:
