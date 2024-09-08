@@ -26,6 +26,7 @@ class MainWindow(QWidget):
     evaluation_combination = Signal(list)
     event_keyboard = Signal(QKeyEvent)
     restart = Signal()
+    show_rules = Signal()
 
     def __init__(self) -> None:
         super().__init__()
@@ -34,7 +35,7 @@ class MainWindow(QWidget):
         self.game_in_progress = False
         PieceColor.number = 0
         self.setWindowTitle("Devine la combinaison secrète - Up Your Skills")
-        self.setWindowIcon((QIcon(QPixmap(ICON_DIR / "logo.ico"))))
+        self.setWindowIcon((QIcon(QPixmap(ICON_DIR / "logo.png"))))
         self.setStyleSheet("background-color: black;")
 
     def setup_ui(self, max_tries: int, level: int, secret_combination: list[Color]) -> None:
@@ -65,7 +66,7 @@ class MainWindow(QWidget):
         self.btn_try = CustomButton("Proposer")
         self.vertical_spacer_3 = CustomSpacer(Orientation.VERTICAL)
 
-        self.btn_rules = CustomButton("Règles du jeu")
+        self.btn_rules = CustomButton("Aide")
         self.btn_new_game = CustomButton("Nouvelle partie")
         self.btn_quit = CustomButton("Quitter")
 
@@ -117,8 +118,8 @@ class MainWindow(QWidget):
 
         self.btn_try.clicked.connect(self.validate_combinaison)
 
-        self.btn_rules.clicked.connect(self.open_window_rules)
-        self.btn_new_game.clicked.connect(self.new_game)
+        self.btn_rules.clicked.connect(self.show_rules.emit)
+        self.btn_new_game.clicked.connect(self.restart.emit)
         self.btn_quit.clicked.connect(self.close)
 
     def confirmation_interruption(self) -> bool:
@@ -194,10 +195,3 @@ class MainWindow(QWidget):
         """Affichage de fin partie, la combinaison
         secrète est révélée."""
         self.row_secret.reveal_combination(is_win)
-
-    def new_game(self) -> None:
-        """Emission du signal pour recommencer une partie"""
-        self.restart.emit()
-
-    def open_window_rules(self) -> None:
-        self.setFocus()

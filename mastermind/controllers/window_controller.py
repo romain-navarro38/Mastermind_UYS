@@ -5,6 +5,7 @@ from mastermind.model.game import Mastermind
 from mastermind.utils.parameters import Color, Neighbor
 from mastermind.views.main_window import MainWindow
 from mastermind.views.new_game import NewGame
+from mastermind.views.rules import HelpWindow
 
 
 class WindowController:
@@ -17,6 +18,7 @@ class WindowController:
         self.view.evaluation_combination.connect(self._evaluate_combination)
         self.view.event_keyboard.connect(self._parse_input)
         self.view.restart.connect(self._new_game)
+        self.view.show_rules.connect(self._show_rules)
 
     def _load_ui(self) -> None:
         """Chargement des composants de la fenêtre"""
@@ -59,7 +61,7 @@ class WindowController:
                 case Qt.Key_N:
                     self._new_game()
                 case Qt.Key_R:
-                    self.view.open_window_rules()
+                    self._show_rules()
         elif not self._is_game_over():
             match event.key():
                 case num if 49 <= num <= 48 + self.model.level.value:
@@ -87,3 +89,8 @@ class WindowController:
         """Fermeture de la fenêtre de jeu"""
         self.view.game_in_progress = False
         self.view.close()
+
+    def _show_rules(self) -> None:
+        self.rules = HelpWindow()
+        self.rules.setWindowModality(Qt.ApplicationModal)
+        self.rules.show()
