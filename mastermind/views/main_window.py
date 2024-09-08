@@ -1,24 +1,12 @@
-from PySide6.QtCore import Qt, QSize, Signal, QEvent
-from PySide6.QtGui import QIcon, QPixmap, QFont, QKeyEvent
-from PySide6.QtWidgets import QWidget, QLabel, QGridLayout, QVBoxLayout, QPushButton, QHBoxLayout
+from PySide6.QtCore import Qt, Signal, QEvent
+from PySide6.QtGui import QIcon, QPixmap, QKeyEvent
+from PySide6.QtWidgets import QWidget, QLabel, QGridLayout, QVBoxLayout, QHBoxLayout
 
 from mastermind.utils.parameters import Color, ICON_DIR, Neighbor
 from mastermind.views.confirmation import ConfirmationMessage
 from mastermind.views.piece import PieceColor, PieceTry
 from mastermind.views.row import RowTry, Status, RowSecret
-from mastermind.views.spacer import Orientation, CustomSpacer
-
-font_bold = QFont()
-font_bold.setBold(True)
-
-
-class CustomButton(QPushButton):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.setFont(font_bold)
-        self.setStyleSheet("background-color: #d0d0d0")
-        self.setMinimumSize(QSize(0, 30))
+from mastermind.views.spacer import Orientation, CustomSpacer, CustomButton
 
 
 class MainWindow(QWidget):
