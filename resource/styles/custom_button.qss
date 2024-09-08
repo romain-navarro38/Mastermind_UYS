@@ -1,5 +1,6 @@
 QPushButton {
     background-color: lightblue;
+    color: black;
 }
 QPushButton:hover {
     background-color: yellow;

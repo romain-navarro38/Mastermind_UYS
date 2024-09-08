@@ -1,9 +1,11 @@
 from PySide6.QtWidgets import QWidget, QTextBrowser, QVBoxLayout, QScrollArea, QPushButton
 
 from mastermind.utils.parameters import get_resource, get_help, STYLE_DIR, View
+from mastermind.views.custom_widget import CustomButton
 
 
 class HelpWindow(QWidget):
+    """Fenêtre d'affichage de l'aide"""
     def __init__(self) -> None:
         super().__init__()
 
@@ -22,7 +24,7 @@ class HelpWindow(QWidget):
     def create_widgets(self) -> None:
         self.scroll_area = QScrollArea()
         self.text_browser = QTextBrowser()
-        self.btn_close = QPushButton("Fermer")
+        self.btn_close = CustomButton("Fermer")
 
     def modify_widgets(self) -> None:
         self.text_browser.setText(get_help(View.WINDOW))
