@@ -5,22 +5,15 @@ from typing import Self
 RESOURCE_DIR = Path(__file__).parent.parent.parent / "resource"
 ICON_DIR = RESOURCE_DIR / "icons"
 STYLE_DIR = RESOURCE_DIR / "styles"
+HTML_DIR = RESOURCE_DIR / "html"
 SIZE_COMBINATION = 4
 SQUARE = "\u25A0"  # correspondant à ■
 DOT = "\u25CF"  # correspondant à ●
 RESET_COLOR = "\033[0m"
-PREAMBLE = f"""JEU DU MASTERMIND
-Trouver la bonne combinaison de {SIZE_COMBINATION} couleurs secrètes que notre 'IA' aura généré.
-A chaque couleur bien positionnée, vous aurez en retour un indicateur rouge.
-A chaque couleur présente mais mal positionnée, vous aurez en retour un indicateur blanc.
-
-Entrez votre combinaison secrète en utilisant les chiffres des couleurs disponibles.
-"""
-
-
-def get_style_sheet(filename: str) -> str:
-    with open(STYLE_DIR / filename, 'r', encoding='utf-8') as f:
-        return f.read()
+PREAMBLE = """{start_h1}JEU DU MASTERMIND{end_h1}
+{start_paragraph}Trouver la bonne combinaison de {SIZE_COMBINATION} couleurs secrètes que notre 'IA' aura générée.{return_line}
+A chaque couleur bien positionnée, vous aurez en retour un indicateur rouge.{return_line}
+A chaque couleur présente mais mal positionnée, vous aurez en retour un indicateur blanc.{end_paragraph}"""
 
 
 class Color(StrEnum):
@@ -84,3 +77,32 @@ class Try(Enum):
     @classmethod
     def from_string(cls, name: str) -> Self:
         return next(attribute for attribute in cls if attribute.name.lower() == name)
+
+
+class View(StrEnum):
+    """Classe Enum représentant une vue"""
+    CONSOLE = 'console'
+    WINDOW = 'fenetre'
+
+
+def get_resource(filename: Path) -> str:
+    """Retourne le contenu de la ressource situé au chemin donné"""
+    with open(filename, 'r', encoding='utf-8') as f:
+        return f.read()
+
+
+def get_help(mode: View) -> str:
+    """Retourne le texte d'aide à afficher en fonction de la vue"""
+    start_h1 = end_h1 = start_paragraph = end_paragraph = return_line = img = ""
+    if mode == View.WINDOW:
+        start_h1 = "<h1>"
+        end_h1 = "</h1>"
+        start_paragraph = "<p>"
+        end_paragraph = "</p>"
+        return_line = "<br />"
+    preamble = PREAMBLE.format(start_h1=start_h1, end_h1=end_h1,
+                               start_paragraph=start_paragraph, end_paragraph=end_paragraph,
+                               return_line=return_line, SIZE_COMBINATION=SIZE_COMBINATION)
+    return (f"{preamble}\n\nEntrez votre combinaison secrète en utilisant les chiffres des couleurs disponibles.\n"
+            if mode == View.CONSOLE else
+            f"{preamble}\n{get_resource(HTML_DIR / "help.html")}")

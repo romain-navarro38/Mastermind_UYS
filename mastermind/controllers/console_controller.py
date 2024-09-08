@@ -1,5 +1,5 @@
 from mastermind.model.game import Mastermind
-from mastermind.utils.parameters import Color, SIZE_COMBINATION, SQUARE, DOT, PREAMBLE
+from mastermind.utils.parameters import Color, SIZE_COMBINATION, SQUARE, DOT, get_help, View
 from mastermind.views.console import Console
 
 
@@ -42,7 +42,7 @@ class ConsoleController:
 
     def run(self) -> None:
         """Boucle du jeu"""
-        self.view.show_rules(PREAMBLE, convertion_color(self.model.available_colors))
+        self.view.show_rules(get_help(View.CONSOLE), convertion_color(self.model.available_colors))
         while True:
             colored_combination = self._get_user_combination()
             evaluation = self.model.evaluate_combinaison(colored_combination)
