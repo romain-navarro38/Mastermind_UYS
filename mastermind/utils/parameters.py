@@ -36,6 +36,7 @@ class Color(StrEnum):
 
     @classmethod
     def from_index(cls, index: int) -> Self:
+        """Retourne l'instance correspondant à l'index donné"""
         return list(cls)[index]
 
     def get_opposite(self) -> str:
@@ -55,10 +56,12 @@ class Level(Enum):
 
     @classmethod
     def from_string(cls, name: str) -> Self:
+        """Retourne l'instance correspondant au nom donné"""
         return next(attribute for attribute in cls if attribute.name.lower() == name)
 
     @classmethod
     def to_list(cls) -> list[str]:
+        """Retourne la liste de tous les attributs au format str"""
         return list(str(attribute) for attribute in cls)
 
 
@@ -80,24 +83,28 @@ class Try(Enum):
 
     @classmethod
     def from_string(cls, name: str) -> Self:
+        """Retourne l'instance correspondant au nom donné"""
         return next(attribute for attribute in cls if attribute.name.lower() == name)
 
     @classmethod
     def to_list(cls) -> list[str]:
+        """Retourne la liste de tous les attributs au format str"""
         return list(str(attribute) for attribute in cls)
 
 
 class View(StrEnum):
-    """Classe Enum représentant une vue"""
+    """Classe StrEnum représentant une vue"""
     CONSOLE = 'console'
     WINDOW = 'fenetre'
 
     @classmethod
     def from_string(cls, name: str) -> Self:
+        """Retourne l'instance correspondant au nom donné"""
         return next(attribute for attribute in cls if attribute.value == name)
 
     @classmethod
     def to_list(cls) -> list[str]:
+        """Retourne la liste de tous les attributs au format str"""
         return list(attribute.value for attribute in cls)
 
 
