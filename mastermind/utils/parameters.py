@@ -84,6 +84,14 @@ class View(StrEnum):
     CONSOLE = 'console'
     WINDOW = 'fenetre'
 
+    @classmethod
+    def from_string(cls, name: str) -> Self:
+        return next(attribute for attribute in cls if attribute.value == name)
+
+    @classmethod
+    def to_list(cls) -> Self:
+        return list(attribute.value for attribute in cls)
+
 
 def get_resource(filename: Path) -> str:
     """Retourne le contenu de la ressource situé au chemin donné"""

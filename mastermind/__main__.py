@@ -6,7 +6,7 @@ from PySide6.QtWidgets import QApplication
 from mastermind.controllers.console_controller import ConsoleController
 from mastermind.controllers.window_controller import WindowController
 from mastermind.model.game import Mastermind
-from mastermind.utils.parameters import Level, Try
+from mastermind.utils.parameters import Level, Try, View
 from mastermind.views.console import Console
 from mastermind.views.main_window import MainWindow
 
@@ -19,8 +19,8 @@ def init_cli_parser():
         description="Jeu de réflexion où le but est de deviner une combinaison de couleurs"
     )
     parser.add_argument('-m', '--mode',
-                        choices=['fenetre', 'console'],
-                        default='fenetre',
+                        choices=View.to_list(),
+                        default=View.WINDOW.value,
                         help="Interface utilisateur")
     parser.add_argument('-l', '--level',
                         choices=list(str(level) for level in Level),
@@ -55,11 +55,8 @@ def main() -> None:
     args = parser.parse_args()
     model = Mastermind(Level.from_string(args.level),
                        Try.from_string(args.tries))
-    run_console(model) if args.mode == 'console' else run_window(model)
+    run_console(model) if View.from_string(args.mode) == View.CONSOLE else run_window(model)
 
 
 if __name__ == '__main__':
     main()
-
-# TODO:
-#  - Fenêtre règles du jeu
