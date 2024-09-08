@@ -23,11 +23,11 @@ def init_cli_parser():
                         default=View.WINDOW.value,
                         help="Interface utilisateur")
     parser.add_argument('-l', '--level',
-                        choices=list(str(level) for level in Level),
+                        choices=Level.to_list(),
                         default=Level.NORMAL.name.lower(),
                         help="Nombre de couleurs disponible")
     parser.add_argument('-t', '--tries',
-                        choices=list(str(tries) for tries in Try),
+                        choices=Try.to_list(),
                         default=Try.NORMAL.name.lower(),
                         help="Nombre d'essais maximum")
     return parser

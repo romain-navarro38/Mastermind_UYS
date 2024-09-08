@@ -57,6 +57,10 @@ class Level(Enum):
     def from_string(cls, name: str) -> Self:
         return next(attribute for attribute in cls if attribute.name.lower() == name)
 
+    @classmethod
+    def to_list(cls) -> list[str]:
+        return list(str(attribute) for attribute in cls)
+
 
 class Neighbor(Enum):
     """Classe Enum représentant le pion voisin,
@@ -78,6 +82,10 @@ class Try(Enum):
     def from_string(cls, name: str) -> Self:
         return next(attribute for attribute in cls if attribute.name.lower() == name)
 
+    @classmethod
+    def to_list(cls) -> list[str]:
+        return list(str(attribute) for attribute in cls)
+
 
 class View(StrEnum):
     """Classe Enum représentant une vue"""
@@ -89,7 +97,7 @@ class View(StrEnum):
         return next(attribute for attribute in cls if attribute.value == name)
 
     @classmethod
-    def to_list(cls) -> Self:
+    def to_list(cls) -> list[str]:
         return list(attribute.value for attribute in cls)
 
 
