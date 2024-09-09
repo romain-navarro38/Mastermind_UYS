@@ -5,6 +5,9 @@ QComboBox {
     min-width: 6em;
     background-color: yellow;
 }
+QComboBox:focus {
+    background-color: orange;
+}
 QComboBox::drop-down {
     subcontrol-origin: padding;
     subcontrol-position: top right;
@@ -22,7 +25,7 @@ QComboBox::down-arrow:on {
 QAbstractItemView {
     border: 2px solid darkgray;
     selection-background-color: lightgray;
-    background-color: yellow;
+    background-color: orange;
     color: black;
 }
 QDialog {
@@ -33,18 +36,28 @@ QLabel {
     color: white;
 }
 #btn_red {
-    background-color: #f44336;
-    color: white;
+    background-color: #fca795;
+    color: black;
     font-size: 14px;
 }
 #btn_green {
-    background-color: #4CAF50;
-    color: white;
+    background-color: #a2ffa2;
+    color: black;
     font-size: 14px;
 }
 #btn_red:hover {
     background-color: red;
+    color: white;
 }
 #btn_green:hover {
     background-color: green;
+    color: white;
+}
+#btn_red:focus {
+    background-color: red;
+    color: white;
+}
+#btn_green:focus {
+    background-color: green;
+    color: white;
 }
