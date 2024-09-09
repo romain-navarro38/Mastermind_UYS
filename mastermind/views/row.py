@@ -6,7 +6,7 @@ from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QWidget, QSizePolicy, QF
 
 from mastermind.utils.parameters import Color, SIZE_COMBINATION, Neighbor
 from mastermind.views.piece import PieceClue, PieceTry, PieceSecret
-from mastermind.views.custom_widget import CustomSpacer, Orientation
+from mastermind.views.custom_widget import CustomSpacer, Orientation, font_bold
 
 
 class Status(Enum):
@@ -37,9 +37,9 @@ class Row(QHBoxLayout):
     def __init__(self) -> None:
         super().__init__()
 
-        self.title = QLabel('')
-        self.title.setStyleSheet("color: black;")
-        self.title.setMinimumSize(QSize(20, 0))
+        self.la_title = QLabel('')
+        self.la_title.setStyleSheet("color: black")
+        self.la_title.setMinimumSize(QSize(20, 0))
         self.colors_layout = QHBoxLayout()
         self.clues_layout = QGridLayout()
 
@@ -49,9 +49,9 @@ class RowSecret(Row):
     def __init__(self, secret_colours: list[Color]) -> None:
         super().__init__()
 
-        self.title.setStyleSheet("color: white;")
-        self.title.setText("?")
-        self.addWidget(self.title)
+        self.la_title.setStyleSheet("color: white;")
+        self.la_title.setText("?")
+        self.addWidget(self.la_title)
         separator1 = VerticalSeparator(True)
         self.addWidget(separator1)
         for i in range(SIZE_COMBINATION):
@@ -60,12 +60,13 @@ class RowSecret(Row):
         self.addLayout(self.colors_layout)
         separator2 = VerticalSeparator(True)
         self.addWidget(separator2)
-        self.game_over = QLabel('')
-        self.game_over.setStyleSheet("color: white;")
+        self.la_game_over = QLabel('')
+        self.la_game_over.setStyleSheet("color: white;font-size: 16px;")
+        self.la_game_over.setFont(font_bold)
         size_policy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
-        self.game_over.setSizePolicy(size_policy)
-        self.game_over.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.addWidget(self.game_over)
+        self.la_game_over.setSizePolicy(size_policy)
+        self.la_game_over.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.addWidget(self.la_game_over)
 
     def reveal_combination(self, winner: bool) -> None:
         """Modifie l'apparence de la ligne pour révéler la combinaison
@@ -74,7 +75,7 @@ class RowSecret(Row):
             piece_secret: PieceSecret = self.colors_layout.itemAt(i).widget()
             piece_secret.set_color(piece_secret.color)
             piece_secret.setText('')
-        self.game_over.setText("Gagné" if winner else "Perdu")
+        self.la_game_over.setText("👏  Gagné  🥳" if winner else "💀  Perdu  😤")
 
 
 class RowTry(Row):
@@ -82,7 +83,7 @@ class RowTry(Row):
     def __init__(self, parent: QWidget, row_number: int) -> None:
         super().__init__()
 
-        self.title.setText(f"{row_number}")
+        self.la_title.setText(f"{row_number}")
         pieces_try = [PieceTry(Color.NOIR) for _ in range(SIZE_COMBINATION)]
         for i in range(SIZE_COMBINATION):
             piece_try = pieces_try[i]
@@ -93,7 +94,7 @@ class RowTry(Row):
             piece_clue = PieceClue()
             self.clues_layout.addWidget(piece_clue, i % 2, i // 2, 1, 1)
 
-        self.addWidget(self.title)
+        self.addWidget(self.la_title)
         self.separator1 = VerticalSeparator()
         self.addWidget(self.separator1)
         self.addLayout(self.colors_layout)
@@ -112,7 +113,7 @@ class RowTry(Row):
                     self.colors_layout.itemAt(i).widget().setEnabled(False)
                 case Status.ACTIVATED:
                     self.colors_layout.itemAt(i).widget().set_color(Color.GRIS)
-                    self.title.setStyleSheet("color: white;")
+                    self.la_title.setStyleSheet("color: white;")
                     self.separator1.set_color(True)
                     self.separator2.set_color(True)
                     self.colors_layout.itemAt(i).widget().setEnabled(True)
