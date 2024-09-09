@@ -75,7 +75,7 @@ class RowSecret(Row):
             piece_secret: PieceSecret = self.colors_layout.itemAt(i).widget()
             piece_secret.set_color(piece_secret.color)
             piece_secret.setText('')
-        self.la_game_over.setText("👏  Gagné  🥳" if winner else "💀  Perdu  😤")
+        self.la_game_over.setText("Gagné !" if winner else "Perdu !")
 
 
 class RowTry(Row):
