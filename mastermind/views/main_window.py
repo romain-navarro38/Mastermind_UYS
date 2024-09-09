@@ -66,6 +66,7 @@ class MainWindow(QWidget):
         self.lab_select_color.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.btn_try.setEnabled(False)
+        self.btn_try.setObjectName("btn_try")
 
     def create_layouts(self) -> None:
         self.main_layout = QGridLayout(self)

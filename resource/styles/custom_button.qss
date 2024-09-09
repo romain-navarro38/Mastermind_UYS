@@ -5,3 +5,12 @@ QPushButton {
 QPushButton:hover {
     background-color: yellow;
 }
+#btn_try:disabled {
+    background-color: lightblue;
+}
+#btn_try:enabled {
+    background-color: #f2f28d;
+}
+#btn_try:hover {
+    background-color: yellow;
+}
