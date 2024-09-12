@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QWidget, QTextBrowser, QVBoxLayout, QScrollArea, QPushButton
 
-from mastermind.utils.parameters import get_resource, get_help, STYLE_DIR, View
+from mastermind.utils.parameters import get_resource, get_help, DIRECTORIES, View
 from mastermind.views.custom_widget import CustomButton
 
 
@@ -12,7 +12,7 @@ class HelpWindow(QWidget):
         self.setup_ui()
         self.resize(600, 500)
         self.setWindowTitle("Aide")
-        self.setStyleSheet(get_resource(STYLE_DIR / "help.qss"))
+        self.setStyleSheet(get_resource(DIRECTORIES['style'] / "help.qss"))
 
     def setup_ui(self) -> None:
         self.create_widgets()

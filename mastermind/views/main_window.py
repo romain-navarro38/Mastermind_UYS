@@ -2,7 +2,7 @@ from PySide6.QtCore import Qt, Signal, QEvent
 from PySide6.QtGui import QIcon, QPixmap, QKeyEvent
 from PySide6.QtWidgets import QWidget, QLabel, QGridLayout, QVBoxLayout, QHBoxLayout
 
-from mastermind.utils.parameters import Color, ICON_DIR, Neighbor
+from mastermind.utils.parameters import Color, DIRECTORIES, Neighbor
 from mastermind.views.confirmation import ConfirmationMessage
 from mastermind.views.piece import PieceColor, PieceTry
 from mastermind.views.row import RowTry, Status, RowSecret
@@ -23,7 +23,7 @@ class MainWindow(QWidget):
         self.game_in_progress = False
         PieceColor.number = 0
         self.setWindowTitle("Devine la combinaison secrète - Up Your Skills")
-        self.setWindowIcon((QIcon(QPixmap(ICON_DIR / "logo.png"))))
+        self.setWindowIcon((QIcon(QPixmap(DIRECTORIES['icon'] / "logo.png"))))
         self.setStyleSheet("background-color: black;")
 
     def setup_ui(self, max_tries: int, level: int, secret_combination: list[Color]) -> None:

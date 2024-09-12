@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QLabel, QComboBox, QPushButton, QGridLayout, QDialog, QWidget
 
-from mastermind.utils.parameters import Level, Try, get_resource, STYLE_DIR
+from mastermind.utils.parameters import Level, Try, get_resource, DIRECTORIES
 
 
 class NewGame(QDialog):
@@ -13,7 +13,7 @@ class NewGame(QDialog):
         self.tries = old_tries
         self.setWindowTitle("Nouvelle partie")
         self.setup_ui()
-        self.setStyleSheet(get_resource(STYLE_DIR / "qdialog.qss"))
+        self.setStyleSheet(get_resource(DIRECTORIES['style'] / "qdialog.qss"))
 
     def setup_ui(self) -> None:
         """Chargement, modification, disposition et connexion des composants"""

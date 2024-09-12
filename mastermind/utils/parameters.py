@@ -3,9 +3,11 @@ from pathlib import Path
 from typing import Self
 
 RESOURCE_DIR = Path(__file__).parent.parent.parent / "resource"
-ICON_DIR = RESOURCE_DIR / "icons"
-STYLE_DIR = RESOURCE_DIR / "styles"
-HTML_DIR = RESOURCE_DIR / "html"
+DIRECTORIES = {
+    "icon": RESOURCE_DIR / "icons",
+    "style": RESOURCE_DIR / "styles",
+    "html": RESOURCE_DIR / "html"
+}
 SIZE_COMBINATION = 4
 SQUARE = "\u25A0"  # correspondant à ■
 DOT = "\u25CF"  # correspondant à ●
@@ -128,4 +130,4 @@ def get_help(mode: View) -> str:
                                return_line=return_line, SIZE_COMBINATION=SIZE_COMBINATION)
     return (f"{preamble}\n\nEntrez votre combinaison secrète en utilisant les chiffres des couleurs disponibles.\n"
             if mode == View.CONSOLE else
-            f"{preamble}\n{get_resource(HTML_DIR / "help.html")}")
+            f"{preamble}\n{get_resource(DIRECTORIES['html'] / "help.html")}")

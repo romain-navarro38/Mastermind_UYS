@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QWidget, QDialog, QLabel, QDialogButtonBox, QVBoxLayout
 
-from mastermind.utils.parameters import get_resource, STYLE_DIR
+from mastermind.utils.parameters import get_resource, DIRECTORIES
 
 
 class ConfirmationMessage(QDialog):
@@ -9,7 +9,7 @@ class ConfirmationMessage(QDialog):
 
         self.setWindowTitle("Confirmation")
         self.setup_ui()
-        self.setStyleSheet(get_resource(STYLE_DIR / "qdialog.qss"))
+        self.setStyleSheet(get_resource(DIRECTORIES['style'] / "qdialog.qss"))
         self.btn_no.setFocus()
 
     def setup_ui(self):
