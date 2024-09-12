@@ -22,7 +22,7 @@ class WindowController:
 
     def _load_ui(self) -> None:
         """Chargement des composants de la fenêtre"""
-        self.view.setup_ui(self.model.max_tries.value, self.model.level.value, self.model.get_secret_combination())
+        self.view.setup_ui(self.model.max_tries.value, self.model.level.value, self.model.secret_combination)
 
     def _is_game_over(self) -> bool:
         """Retourne True si la partie est terminée"""

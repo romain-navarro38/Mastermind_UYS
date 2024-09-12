@@ -28,7 +28,8 @@ class Mastermind:
         """Générer une liste de Color aléatoire"""
         return tuple(choice(self.available_colors) for _ in range(SIZE_COMBINATION))
 
-    def get_secret_combination(self) -> tuple[Color]:
+    @property
+    def secret_combination(self) -> tuple[Color]:
         """Retourne la combinaison secrète de la partie"""
         return self._secret
 

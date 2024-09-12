@@ -37,7 +37,7 @@ class ConsoleController:
                               if self.model.win
                               else "Raté ! La combinaison secrète était : ")
         self.view.show_game_over(game_over_sentence,
-                                 convertion_color(self.model.get_secret_combination(), SQUARE))
+                                 convertion_color(self.model.secret_combination, SQUARE))
         return True
 
     def run(self) -> None:
