@@ -118,7 +118,7 @@ def get_resource(filename: Path) -> str:
 
 def get_help(mode: View) -> str:
     """Retourne le texte d'aide à afficher en fonction de la vue"""
-    start_h1 = end_h1 = start_paragraph = end_paragraph = return_line = img = ""
+    start_h1 = end_h1 = start_paragraph = end_paragraph = return_line = ""
     if mode == View.WINDOW:
         start_h1 = "<h1>"
         end_h1 = "</h1>"
