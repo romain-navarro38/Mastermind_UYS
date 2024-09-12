@@ -32,7 +32,7 @@ class WindowController:
         """Retourne True si la partie est gagnée"""
         return self.model.win
 
-    def _evaluate_combination(self, combination: list[Color]) -> None:
+    def _evaluate_combination(self, combination: tuple[Color]) -> None:
         """Obtient du modèle les indices associés à la combinaison évaluée
         et met à jour la vue en conséquence"""
         if (clues := self.model.evaluate_combinaison(combination)) is None:

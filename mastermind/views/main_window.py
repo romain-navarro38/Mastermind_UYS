@@ -26,7 +26,7 @@ class MainWindow(QWidget):
         self.setWindowIcon((QIcon(QPixmap(DIRECTORIES['icon'] / "logo.png"))))
         self.setStyleSheet("background-color: black;")
 
-    def setup_ui(self, max_tries: int, level: int, secret_combination: list[Color]) -> None:
+    def setup_ui(self, max_tries: int, level: int, secret_combination: tuple[Color, ...]) -> None:
         """Chargement, modification, disposition et connexion des composants"""
         self.create_widgets(max_tries, level, secret_combination)
         self.modify_widgets()
@@ -37,7 +37,7 @@ class MainWindow(QWidget):
 
     def create_widgets(self, max_tries: int,
                        level: int,
-                       secret_combination: list[Color]) -> None:
+                       secret_combination: tuple[Color, ...]) -> None:
         for i in range(max_tries):
             row = RowTry(self, i + 1)
             self.rows[i] = row
@@ -168,7 +168,7 @@ class MainWindow(QWidget):
         """Retourne True si une couleur a été appliquée à chaque pion."""
         return Color.GRIS not in self.get_try_combination()
 
-    def display_clues(self, clues: list[Color]) -> None:
+    def display_clues(self, clues: tuple[Color]) -> None:
         """Affiche dans la ligne active les couleurs des indices
         passés en paramètres."""
         clue_layout = self.rows[self.num_row_enabled].clues_layout

@@ -46,7 +46,7 @@ class Row(QHBoxLayout):
 
 class RowSecret(Row):
     """Représente la ligne contenant la combinaison secrète."""
-    def __init__(self, secret_colours: list[Color]) -> None:
+    def __init__(self, secret_colours: tuple[Color, ...]) -> None:
         super().__init__()
 
         self.la_title.setStyleSheet("color: white;")

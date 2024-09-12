@@ -3,7 +3,7 @@ from mastermind.utils.parameters import Color, SIZE_COMBINATION, SQUARE, DOT, ge
 from mastermind.views.console import Console
 
 
-def convertion_color(colors: list[Color], symbol: str = None) -> list[str]:
+def convertion_color(colors: tuple[Color, ...], symbol: str = None) -> tuple[str, ...]:
     """Construit une liste de chaînes de caractères colorées (ANSI)"""
     str_color, number, text = [], "", symbol
     for i, color in enumerate(colors, 1):
@@ -12,7 +12,7 @@ def convertion_color(colors: list[Color], symbol: str = None) -> list[str]:
             number = f"[{i}] "
             text = color.name.capitalize()
         str_color.append(f"{number}\033[38;2;{red};{green};{blue}m{text}")
-    return str_color
+    return tuple(str_color)
 
 
 class ConsoleController:
@@ -21,13 +21,13 @@ class ConsoleController:
         self.view = view
         self.colors = {str(i): color for i, color in enumerate(self.model.available_colors, 1)}
 
-    def _get_user_combination(self) -> list[Color]:
+    def _get_user_combination(self) -> tuple[Color, ...]:
         """Obtient de l'utilisateur une combinaison.
         La retourne sous d'une liste de Color"""
-        user_combination = self.view.get_user_combination(self.model.try_counter + 1,
+        user_combination = self.view.get_user_combination(self.model.try_counter,
                                                           self.model.max_tries.value,
                                                           SIZE_COMBINATION)
-        return [self.colors.get(char, Color.GRIS) for char in user_combination]
+        return tuple(self.colors.get(char, Color.GRIS) for char in user_combination)
 
     def _endgame(self) -> bool:
         """Si la partie est terminée, fait afficher à l'UI le résultat final"""

@@ -3,10 +3,10 @@ from random import choice, shuffle
 from mastermind.utils.parameters import Level, Color, Try, SIZE_COMBINATION
 
 
-def shuffle_items_list(list_color: list) -> list:
+def shuffle_items_list(list_color: list) -> tuple:
     """Mélanger aléatoirement les éléments d'une liste donnée"""
     shuffle(list_color)
-    return list_color
+    return tuple(list_color)
 
 
 class Mastermind:
@@ -24,16 +24,16 @@ class Mastermind:
         self.available_colors = tuple(Color)[:level.value]
         self._secret = self._generate_combinaison()
 
-    def _generate_combinaison(self) -> tuple[Color]:
+    def _generate_combinaison(self) -> tuple[Color, ...]:
         """Générer une liste de Color aléatoire"""
         return tuple(choice(self.available_colors) for _ in range(SIZE_COMBINATION))
 
     @property
-    def secret_combination(self) -> tuple[Color]:
+    def secret_combination(self) -> tuple[Color, ...]:
         """Retourne la combinaison secrète de la partie"""
         return self._secret
 
-    def evaluate_combinaison(self, combination: list[Color]) -> list[Color] | None:
+    def evaluate_combinaison(self, combination: tuple[Color, ...]) -> tuple[Color] | None:
         """Retourne une liste de Color représentant des indices déterminés en
         comparant la combinaison passée en paramètre et combinaison secrète."""
         if len(combination) == SIZE_COMBINATION and set(combination) <= set(self.available_colors):

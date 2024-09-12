@@ -4,7 +4,7 @@ from mastermind.utils.parameters import RESET_COLOR
 class Console:
     """Gère l'interface utilisateur en mode console"""
     @staticmethod
-    def show_rules(preamble: str, colored_choices: list[str]) -> None:
+    def show_rules(preamble: str, colored_choices: tuple[str, ...]) -> None:
         """Affichage des règles du jeu et du code couleur disponible"""
         print(f"{preamble}{f"    {RESET_COLOR}".join(colored_choices)}{RESET_COLOR}")
 
@@ -16,12 +16,12 @@ class Console:
         )
 
     @staticmethod
-    def show_result(combination: list[str], clues: list[str]) -> None:
+    def show_result(combination: tuple[str, ...], clues: tuple[str, ...]) -> None:
         """Affiche la combinaison formatée de l'utilisateur suivi des indicateurs associés"""
         print(f"{" ".join(combination)}{RESET_COLOR} Indicateurs : {" ".join(clues)}{RESET_COLOR}")
 
     @staticmethod
-    def show_game_over(sentence: str, combination: list[str]) -> None:
+    def show_game_over(sentence: str, combination: tuple[str, ...]) -> None:
         """Affiche la phrase de fin de partie et la combinaison secrète"""
         print(f"{sentence}{" ".join(combination)}")
 
