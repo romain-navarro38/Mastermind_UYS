@@ -21,14 +21,14 @@ class Mastermind:
         self.max_tries = max_tries
         self.try_counter = 0
         self.game_over = self.win = False
-        self.available_colors = list(Color)[:level.value]
+        self.available_colors = tuple(Color)[:level.value]
         self._secret = self._generate_combinaison()
 
-    def _generate_combinaison(self) -> list[Color]:
+    def _generate_combinaison(self) -> tuple[Color]:
         """Générer une liste de Color aléatoire"""
-        return [choice(self.available_colors) for _ in range(SIZE_COMBINATION)]
+        return tuple(choice(self.available_colors) for _ in range(SIZE_COMBINATION))
 
-    def get_secret_combination(self) -> list[Color]:
+    def get_secret_combination(self) -> tuple[Color]:
         """Retourne la combinaison secrète de la partie"""
         return self._secret
 
@@ -42,7 +42,6 @@ class Mastermind:
             evaluation = [Color.ROUGE] * red + [Color.BLANC] * white
             self._update_game_status(evaluation)
             return shuffle_items_list(evaluation)
-        return
 
     def _update_game_status(self, clues: list[Color]) -> None:
         """Met à jour le status de la partie (terminée ou non)
