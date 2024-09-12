@@ -19,7 +19,7 @@ class Mastermind:
         """Initialiser les attributs pour commencer une nouvelle partie"""
         self.level = level
         self.max_tries = max_tries
-        self.try_counter = 0
+        self.remaining_tries: int = max_tries.value
         self.game_over = self.win = False
         self.available_colors = tuple(Color)[:level.value]
         self._secret = self._generate_combinaison()
@@ -37,7 +37,7 @@ class Mastermind:
         """Retourne une liste de Color représentant des indices déterminés en
         comparant la combinaison passée en paramètre et combinaison secrète."""
         if len(combination) == SIZE_COMBINATION and set(combination) <= set(self.available_colors):
-            self.try_counter += 1
+            self.remaining_tries -= 1
             red = sum(s == c for s, c in zip(self._secret, combination, strict=False))
             white = sum(min(self._secret.count(c), combination.count(c)) for c in set(combination)) - red
             evaluation = [Color.ROUGE] * red + [Color.BLANC] * white
@@ -48,4 +48,4 @@ class Mastermind:
         """Met à jour le status de la partie (terminée ou non)
         et dans quel état (gagnée ou perdue)."""
         self.win = clues.count(Color.ROUGE) == SIZE_COMBINATION
-        self.game_over = self.win or self.try_counter == self.max_tries.value
+        self.game_over = self.win or not self.remaining_tries
