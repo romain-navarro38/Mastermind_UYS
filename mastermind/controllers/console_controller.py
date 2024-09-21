@@ -23,7 +23,7 @@ class ConsoleController:
 
     def _get_user_combination(self) -> tuple[Color, ...]:
         """Obtient de l'utilisateur une combinaison.
-        La retourne sous d'une liste de Color"""
+        La retourne sous forme d'un tuple de Color"""
         try_number = self.model.max_tries.value - self.model.remaining_tries + 1
         user_combination = self.view.get_user_combination(try_number,
                                                           self.model.max_tries.value,
