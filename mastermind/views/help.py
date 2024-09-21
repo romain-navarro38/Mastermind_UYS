@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget, QTextBrowser, QVBoxLayout, QScrollArea, QPushButton
+from PySide6.QtWidgets import QWidget, QTextBrowser, QVBoxLayout, QScrollArea
 
 from mastermind.utils.parameters import get_resource, get_help, DIRECTORIES, View
 from mastermind.views.custom_widget import CustomButton
