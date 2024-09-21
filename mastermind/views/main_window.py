@@ -111,6 +111,26 @@ class MainWindow(QWidget):
         self.btn_new_game.clicked.connect(self.restart.emit)
         self.btn_quit.clicked.connect(self.close)
 
+    def _is_active_row_valid(self) -> bool:
+        """Retourne True si une couleur a été appliquée à chaque pion."""
+        return Color.GRIS not in self._get_try_combination()
+
+    def _get_try_combination(self) -> list[Color]:
+        """Récupère la liste des couleurs de la ligne active."""
+        try_layout = self.rows[self.num_row_enabled].colors_layout
+        return [try_layout.itemAt(i).widget().color for i in range(try_layout.count())]
+
+    def activate_next_try(self) -> None:
+        """Activation de la prochaine ligne d'essai"""
+        self.num_row_enabled += 1
+        self.rows[self.num_row_enabled].set_status(Status.ACTIVATED)
+
+    def closeEvent(self, event: QEvent) -> None:
+        """Gère les événements de fermeture.
+        Demande confirmation si une partie est en cours"""
+        if self.game_in_progress:
+            event.accept() if self.confirmation_interruption() else event.ignore()
+
     def confirmation_interruption(self) -> bool:
         """Retourne le choix de l'utilisateur via une boite de dialogue
         d'interrompre la partie en cours"""
@@ -120,11 +140,22 @@ class MainWindow(QWidget):
         self.setFocus()
         return False
 
-    def closeEvent(self, event: QEvent) -> None:
-        """Gère les événements de fermeture.
-        Demande confirmation si une partie est en cours"""
-        if self.game_in_progress:
-            event.accept() if self.confirmation_interruption() else event.ignore()
+    def deactivate_row(self) -> None:
+        """Désactivation de la ligne active"""
+        self.rows[self.num_row_enabled].set_status(Status.DEACTIVATED)
+        self.btn_try.setEnabled(False)
+
+    def display_clues(self, clues: tuple[Color]) -> None:
+        """Affiche dans la ligne active les couleurs des indices
+        passés en paramètres."""
+        clue_layout = self.rows[self.num_row_enabled].clues_layout
+        for i, color in enumerate(clues):
+            clue_layout.itemAt(i).widget().set_color(color)
+
+    def display_game_over(self, is_win: bool) -> None:
+        """Affichage de fin partie, la combinaison
+        secrète est révélée."""
+        self.row_secret.reveal_combination(is_win)
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         """Émet le signal event_keyboard avec la ou les touches
@@ -147,40 +178,9 @@ class MainWindow(QWidget):
                 try_layout.itemAt(i).widget().set_color(color)
                 break
         self.rows[self.num_row_enabled].select_neighbor_try_piece(Neighbor.RIGHT)
-        self.btn_try.setEnabled(self.is_active_row_valid())
+        self.btn_try.setEnabled(self._is_active_row_valid())
 
     def validate_combinaison(self) -> None:
         """Émet dans un signal la combinaison de la ligne active"""
-        self.evaluation_combination.emit(self.get_try_combination())
+        self.evaluation_combination.emit(self._get_try_combination())
         self.setFocus()
-
-    def deactivate_row(self) -> None:
-        """Désactivation de la ligne active"""
-        self.rows[self.num_row_enabled].set_status(Status.DEACTIVATED)
-        self.btn_try.setEnabled(False)
-
-    def get_try_combination(self) -> list[Color]:
-        """Récupère la liste des couleurs de la ligne active."""
-        try_layout = self.rows[self.num_row_enabled].colors_layout
-        return [try_layout.itemAt(i).widget().color for i in range(try_layout.count())]
-
-    def is_active_row_valid(self) -> bool:
-        """Retourne True si une couleur a été appliquée à chaque pion."""
-        return Color.GRIS not in self.get_try_combination()
-
-    def display_clues(self, clues: tuple[Color]) -> None:
-        """Affiche dans la ligne active les couleurs des indices
-        passés en paramètres."""
-        clue_layout = self.rows[self.num_row_enabled].clues_layout
-        for i, color in enumerate(clues):
-            clue_layout.itemAt(i).widget().set_color(color)
-
-    def activate_next_try(self) -> None:
-        """Activation de la prochaine ligne d'essai"""
-        self.num_row_enabled += 1
-        self.rows[self.num_row_enabled].set_status(Status.ACTIVATED)
-
-    def display_game_over(self, is_win: bool) -> None:
-        """Affichage de fin partie, la combinaison
-        secrète est révélée."""
-        self.row_secret.reveal_combination(is_win)

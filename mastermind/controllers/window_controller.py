@@ -13,24 +13,10 @@ class WindowController:
         self.model = model
         self.view = view
 
-    def _init_reception_signal(self) -> None:
-        """Connexion des signaux de la vue"""
-        self.view.evaluation_combination.connect(self._evaluate_combination)
-        self.view.event_keyboard.connect(self._parse_input)
-        self.view.restart.connect(self._new_game)
-        self.view.show_rules.connect(self._show_rules)
-
-    def _load_ui(self) -> None:
-        """Chargement des composants de la fenêtre"""
-        self.view.setup_ui(self.model.max_tries.value, self.model.level.value, self.model.secret_combination)
-
-    def _is_game_over(self) -> bool:
-        """Retourne True si la partie est terminée"""
-        return self.model.game_over
-
-    def _is_win(self) -> bool:
-        """Retourne True si la partie est gagnée"""
-        return self.model.win
+    def _close_view(self) -> None:
+        """Fermeture de la fenêtre de jeu"""
+        self.view.game_in_progress = False
+        self.view.close()
 
     def _evaluate_combination(self, combination: tuple[Color]) -> None:
         """Obtient du modèle les indices associés à la combinaison évaluée
@@ -46,11 +32,36 @@ class WindowController:
             self.view.game_in_progress = True
             self.view.activate_next_try()
 
-    def run(self) -> None:
-        """Affiche la fenêtre principale"""
-        self._load_ui()
-        self._init_reception_signal()
-        self.view.show()
+    def _init_reception_signal(self) -> None:
+        """Connexion des signaux de la vue"""
+        self.view.evaluation_combination.connect(self._evaluate_combination)
+        self.view.event_keyboard.connect(self._parse_input)
+        self.view.restart.connect(self._new_game)
+        self.view.show_rules.connect(self._show_rules)
+
+    def _is_game_over(self) -> bool:
+        """Retourne True si la partie est terminée"""
+        return self.model.game_over
+
+    def _is_win(self) -> bool:
+        """Retourne True si la partie est gagnée"""
+        return self.model.win
+
+    def _load_ui(self) -> None:
+        """Chargement des composants de la fenêtre"""
+        self.view.setup_ui(self.model.max_tries.value, self.model.level.value, self.model.secret_combination)
+
+    def _new_game(self) -> None:
+        """Chargement d'une nouvelle fenêtre de jeu"""
+        if self.view.game_in_progress and not self.view.confirmation_interruption():
+            return
+        dialog = NewGame(self.view, self.model.level, self.model.max_tries)
+        if dialog.exec():
+            level, tries = dialog.get_params_new_game()
+            self.model.init_new_game(level, tries)
+            self._close_view()
+            self.view = MainWindow()
+            self.run()
 
     def _parse_input(self, event: QKeyEvent) -> None:
         """Déclenche, sur la vue, l'action associée à l'entrée clavier"""
@@ -73,24 +84,13 @@ class WindowController:
                 case Qt.Key_Return | Qt.Key_Enter:
                     self.view.validate_combinaison()
 
-    def _new_game(self) -> None:
-        """Chargement d'une nouvelle fenêtre de jeu"""
-        if self.view.game_in_progress and not self.view.confirmation_interruption():
-            return
-        dialog = NewGame(self.view, self.model.level, self.model.max_tries)
-        if dialog.exec():
-            level, tries = dialog.get_params_new_game()
-            self.model.init_new_game(level, tries)
-            self._close_view()
-            self.view = MainWindow()
-            self.run()
-
-    def _close_view(self) -> None:
-        """Fermeture de la fenêtre de jeu"""
-        self.view.game_in_progress = False
-        self.view.close()
-
     def _show_rules(self) -> None:
         self.rules = HelpWindow()
         self.rules.setWindowModality(Qt.ApplicationModal)
         self.rules.show()
+
+    def run(self) -> None:
+        """Affiche la fenêtre principale"""
+        self._load_ui()
+        self._init_reception_signal()
+        self.view.show()

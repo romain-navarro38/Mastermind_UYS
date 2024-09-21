@@ -32,10 +32,6 @@ class Color(StrEnum):
     NOIR = "#000000"
     GRIS = '#7f7f7f'
 
-    def to_rgb(self) -> tuple[int, ...]:
-        """Retourne la couleur au format RGB"""
-        return tuple(int(self.value[i:i + 2], 16) for i in range(1, len(self.value), 2))
-
     @classmethod
     def from_index(cls, index: int) -> Self:
         """Retourne l'instance correspondant à l'index donné"""
@@ -44,6 +40,10 @@ class Color(StrEnum):
     def get_opposite(self) -> str:
         """Retourne la couleur opposée au format hexadécimal"""
         return f"#{''.join([f'{hex(255 - c)[2:]:02}' for c in self.to_rgb()])}"
+
+    def to_rgb(self) -> tuple[int, ...]:
+        """Retourne la couleur au format RGB"""
+        return tuple(int(self.value[i:i + 2], 16) for i in range(1, len(self.value), 2))
 
 
 class Level(Enum):
@@ -110,12 +110,6 @@ class View(StrEnum):
         return list(attribute.value for attribute in cls)
 
 
-def get_resource(filename: Path) -> str:
-    """Retourne le contenu de la ressource situé au chemin donné"""
-    with open(filename, 'r', encoding='utf-8') as f:
-        return f.read()
-
-
 def get_help(mode: View) -> str:
     """Retourne le texte d'aide à afficher en fonction de la vue"""
     start_h1 = end_h1 = start_paragraph = end_paragraph = return_line = ""
@@ -131,3 +125,9 @@ def get_help(mode: View) -> str:
     return (f"{preamble}\n\nEntrez votre combinaison secrète en utilisant les chiffres des couleurs disponibles.\n"
             if mode == View.CONSOLE else
             f"{preamble}\n{get_resource(DIRECTORIES['html'] / "help.html")}")
+
+
+def get_resource(filename: Path) -> str:
+    """Retourne le contenu de la ressource situé au chemin donné"""
+    with open(filename, 'r', encoding='utf-8') as f:
+        return f.read()

@@ -21,15 +21,6 @@ class ConsoleController:
         self.view = view
         self.colors = {str(i): color for i, color in enumerate(self.model.available_colors, 1)}
 
-    def _get_user_combination(self) -> tuple[Color, ...]:
-        """Obtient de l'utilisateur une combinaison.
-        La retourne sous forme d'un tuple de Color"""
-        try_number = self.model.max_tries.value - self.model.remaining_tries + 1
-        user_combination = self.view.get_user_combination(try_number,
-                                                          self.model.max_tries.value,
-                                                          SIZE_COMBINATION)
-        return tuple(self.colors.get(char, Color.GRIS) for char in user_combination)
-
     def _endgame(self) -> bool:
         """Si la partie est terminée, fait afficher à l'UI le résultat final"""
         if not self.model.game_over:
@@ -40,6 +31,15 @@ class ConsoleController:
         self.view.show_game_over(game_over_sentence,
                                  convertion_color(self.model.secret_combination, SQUARE))
         return True
+
+    def _get_user_combination(self) -> tuple[Color, ...]:
+        """Obtient de l'utilisateur une combinaison.
+        La retourne sous forme d'un tuple de Color"""
+        try_number = self.model.max_tries.value - self.model.remaining_tries + 1
+        user_combination = self.view.get_user_combination(try_number,
+                                                          self.model.max_tries.value,
+                                                          SIZE_COMBINATION)
+        return tuple(self.colors.get(char, Color.GRIS) for char in user_combination)
 
     def run(self) -> None:
         """Boucle du jeu"""

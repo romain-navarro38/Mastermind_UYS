@@ -104,6 +104,23 @@ class RowTry(Row):
         self.addSpacerItem(CustomSpacer(Orientation.HORIZONTAL))
         self.set_status(Status.ON_HOLD)
 
+    def select_neighbor_try_piece(self, neighbor: Neighbor) -> None:
+        """Passe à l'état 'sélectionné' le pion qui suit ou précède celui
+        qui est actuellement 'sélectionné' dans la ligne."""
+        direction = (range(self.colors_layout.count())
+                     if neighbor == Neighbor.RIGHT
+                     else range(self.colors_layout.count() - 1, -1, -1))
+        piece_try: PieceTry | None = next(
+            (self.colors_layout.itemAt(i).widget() for i in direction
+             if self.colors_layout.itemAt(i).widget().is_selected),
+            None
+        )
+        if piece_try:
+            piece_try.set_selected(False)
+            (piece_try.next_piece.set_selected(True)
+             if neighbor == Neighbor.RIGHT
+             else piece_try.previous_piece.set_selected(True))
+
     def set_status(self, status: Status) -> None:
         """Modifie l'apparence de la ligne en fonction de l'état donné."""
         for i in range(self.colors_layout.count()):
@@ -122,20 +139,3 @@ class RowTry(Row):
 
         if status == Status.ACTIVATED:
             self.colors_layout.itemAt(0).widget().set_selected(True)
-
-    def select_neighbor_try_piece(self, neighbor: Neighbor) -> None:
-        """Passe à l'état 'sélectionné' le pion qui suit ou précède celui
-        qui est actuellement 'sélectionné' dans la ligne."""
-        direction = (range(self.colors_layout.count())
-                     if neighbor == Neighbor.RIGHT
-                     else range(self.colors_layout.count() - 1, -1, -1))
-        piece_try: PieceTry | None = next(
-            (self.colors_layout.itemAt(i).widget() for i in direction
-             if self.colors_layout.itemAt(i).widget().is_selected),
-            None
-        )
-        if piece_try:
-            piece_try.set_selected(False)
-            (piece_try.next_piece.set_selected(True)
-             if neighbor == Neighbor.RIGHT
-             else piece_try.previous_piece.set_selected(True))
