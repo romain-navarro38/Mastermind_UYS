@@ -28,14 +28,14 @@ class MainWindow(QWidget):
 
     def setup_ui(self, max_tries: int, level: int, secret_combination: tuple[Color, ...]) -> None:
         """Chargement, modification, disposition et connexion des composants"""
-        self.create_widgets(max_tries, level, secret_combination)
-        self.modify_widgets()
-        self.create_layouts()
-        self.add_widgets_to_layouts()
-        self.setup_connections()
+        self._setup_ui_create_widgets(max_tries, level, secret_combination)
+        self._setup_ui_modify_widgets()
+        self._setup_ui_create_layouts()
+        self._setup_ui_add_widgets_to_layouts()
+        self._setup_ui_connections()
         self.setFocus()
 
-    def create_widgets(self, max_tries: int,
+    def _setup_ui_create_widgets(self, max_tries: int,
                        level: int,
                        secret_combination: tuple[Color, ...]) -> None:
         for i in range(max_tries):
@@ -58,7 +58,7 @@ class MainWindow(QWidget):
         self.btn_new_game = CustomButton("Nouvelle partie")
         self.btn_quit = CustomButton("Quitter")
 
-    def modify_widgets(self) -> None:
+    def _setup_ui_modify_widgets(self) -> None:
         self.rows[0].set_status(Status.ACTIVATED)
         self.num_row_enabled = 0
 
@@ -68,7 +68,7 @@ class MainWindow(QWidget):
         self.btn_try.setEnabled(False)
         self.btn_try.setObjectName("btn_try")
 
-    def create_layouts(self) -> None:
+    def _setup_ui_create_layouts(self) -> None:
         self.main_layout = QGridLayout(self)
         self.tries_layout = QVBoxLayout()
         self.color_layout = QVBoxLayout()
@@ -77,7 +77,7 @@ class MainWindow(QWidget):
         self.buttons_layout = QHBoxLayout()
         self.buttons_layout.setContentsMargins(0, 20, 0, 0)
 
-    def add_widgets_to_layouts(self) -> None:
+    def _setup_ui_add_widgets_to_layouts(self) -> None:
         for row in self.rows.values():
             self.tries_layout.addLayout(row)
 
@@ -101,7 +101,7 @@ class MainWindow(QWidget):
         self.main_layout.addLayout(self.row_secret, 1, 0, 1, 2)
         self.main_layout.addLayout(self.buttons_layout, 2, 0, 1, 2)
 
-    def setup_connections(self) -> None:
+    def _setup_ui_connections(self) -> None:
         for piece_color in self.pieces_colors:
             piece_color.clicked.connect(self.positioned_color)
 
