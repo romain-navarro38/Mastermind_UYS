@@ -27,6 +27,7 @@ class HelpWindow(QWidget):
     def _setup_ui_create_widgets(self) -> None:
         self.scroll_area = QScrollArea()
         self.text_browser = QTextBrowser()
+        self.btn_close = CustomButton()
 
     def _setup_ui_modify_widgets(self) -> None:
         pass
@@ -45,5 +46,5 @@ class HelpWindow(QWidget):
 
     def _setup_ui_translation(self) -> None:
         self.setWindowTitle(self.translation['window_title'])
-        self.btn_close = CustomButton(self.translation['close_button'])
+        self.btn_close.setText(self.translation['close_button'])
         self.text_browser.setText(self.translation['help'])
