@@ -4,21 +4,19 @@ from mastermind.utils.parameters import RESET_COLOR
 class Console:
     """Gère l'interface utilisateur en mode console"""
     @staticmethod
-    def get_user_combination(try_number: int, max_tries: int, size_combination: int) -> str:
+    def get_user_combination(sentence: str) -> str:
         """Obtient de l'utilisateur une combinaison"""
-        return input(
-            f"\nEssai {try_number}/{max_tries} - Veuillez saisir vos {size_combination} chiffres pour les couleurs : "
-        )
+        return input(f"\n{sentence} ")
 
     @staticmethod
     def show_game_over(sentence: str, combination: tuple[str, ...]) -> None:
         """Affiche la phrase de fin de partie et la combinaison secrète"""
-        print(f"{sentence}{" ".join(combination)}")
+        print(f"{sentence} {" ".join(combination)}")
 
     @staticmethod
-    def show_result(combination: tuple[str, ...], clues: tuple[str, ...]) -> None:
+    def show_result(combination: tuple[str, ...], clues: tuple[str, ...], indicator: str) -> None:
         """Affiche la combinaison formatée de l'utilisateur suivi des indicateurs associés"""
-        print(f"{" ".join(combination)}{RESET_COLOR} Indicateurs : {" ".join(clues)}{RESET_COLOR}")
+        print(f"{" ".join(combination)}{RESET_COLOR} {indicator} {" ".join(clues)}{RESET_COLOR}")
 
     @staticmethod
     def show_rules(preamble: str, colored_choices: tuple[str, ...]) -> None:
@@ -26,6 +24,6 @@ class Console:
         print(f"{preamble}{f"    {RESET_COLOR}".join(colored_choices)}{RESET_COLOR}")
 
     @staticmethod
-    def show_warning() -> None:
+    def show_warning(sentence: str) -> None:
         """Affiche un message d'alerte"""
-        print("Votre saisie est incorrecte...")
+        print(sentence)

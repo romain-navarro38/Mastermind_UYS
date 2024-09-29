@@ -29,7 +29,7 @@ class VerticalSeparator(QFrame):
         """Modifie la couleur en fonction de l'état d'activation voulu.
         Activé : blanc
         Désactivé : noir"""
-        self.setStyleSheet(f"background-color: {Color.BLANC if enabled else Color.NOIR}")
+        self.setStyleSheet(f"background-color: {Color.WHITE if enabled else Color.BLACK}")
 
 
 class Row(QHBoxLayout):
@@ -61,21 +61,25 @@ class RowSecret(Row):
         separator2 = VerticalSeparator(True)
         self.addWidget(separator2)
         self.la_game_over = QLabel('')
-        self.la_game_over.setStyleSheet("color: white;font-size: 16px;")
         self.la_game_over.setFont(font_bold)
         size_policy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         self.la_game_over.setSizePolicy(size_policy)
         self.la_game_over.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.addWidget(self.la_game_over)
 
-    def reveal_combination(self, winner: bool) -> None:
+    def reveal_combination(self, winner: bool, translation: dict) -> None:
         """Modifie l'apparence de la ligne pour révéler la combinaison
         secrète et afficher si la partie est gagnée ou perdue."""
         for i in range(self.colors_layout.count()):
             piece_secret: PieceSecret = self.colors_layout.itemAt(i).widget()
             piece_secret.set_color(piece_secret.color)
             piece_secret.setText('')
-        self.la_game_over.setText("Gagné !" if winner else "Perdu !")
+        if winner:
+            self.la_game_over.setStyleSheet("color: green;font-size: 14px;")
+            self.la_game_over.setText(translation['win_message'])
+        else:
+            self.la_game_over.setStyleSheet("color: red;font-size: 14px;")
+            self.la_game_over.setText(translation['lose_message'])
 
 
 class RowTry(Row):
@@ -84,7 +88,7 @@ class RowTry(Row):
         super().__init__()
 
         self.la_title.setText(f"{row_number}")
-        pieces_try = [PieceTry(Color.NOIR) for _ in range(SIZE_COMBINATION)]
+        pieces_try = [PieceTry(Color.BLACK) for _ in range(SIZE_COMBINATION)]
         for i in range(SIZE_COMBINATION):
             piece_try = pieces_try[i]
             piece_try.next_piece = pieces_try[i + 1 if i < SIZE_COMBINATION - 1 else 0]
@@ -126,10 +130,10 @@ class RowTry(Row):
         for i in range(self.colors_layout.count()):
             match status:
                 case Status.ON_HOLD:
-                    self.colors_layout.itemAt(i).widget().set_color(Color.NOIR)
+                    self.colors_layout.itemAt(i).widget().set_color(Color.BLACK)
                     self.colors_layout.itemAt(i).widget().setEnabled(False)
                 case Status.ACTIVATED:
-                    self.colors_layout.itemAt(i).widget().set_color(Color.GRIS)
+                    self.colors_layout.itemAt(i).widget().set_color(Color.GRAY)
                     self.la_title.setStyleSheet("color: white;")
                     self.separator1.set_color(True)
                     self.separator2.set_color(True)

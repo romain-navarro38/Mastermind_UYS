@@ -5,7 +5,7 @@ QComboBox {
     min-width: 6em;
     background-color: yellow;
 }
-QComboBox:focus {
+QComboBox:hover {
     background-color: orange;
 }
 QComboBox::drop-down {

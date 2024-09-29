@@ -1,36 +1,35 @@
 from enum import Enum, StrEnum, auto
+from json import load, JSONDecodeError, dump
+from jsonschema import validate, ValidationError
 from pathlib import Path
 from typing import Self
 
-RESOURCE_DIR = Path(__file__).parent.parent.parent / "resource"
+ROOT_DIR = Path(__file__).parent.parent.parent
+RESOURCE_DIR = ROOT_DIR / "resource"
 DIRECTORIES = {
+    "html": RESOURCE_DIR / "html",
     "icon": RESOURCE_DIR / "icons",
     "style": RESOURCE_DIR / "styles",
-    "html": RESOURCE_DIR / "html"
 }
 SIZE_COMBINATION = 4
 SQUARE = "\u25A0"  # correspondant à ■
 DOT = "\u25CF"  # correspondant à ●
 RESET_COLOR = "\033[0m"
-PREAMBLE = """{start_h1}JEU DU MASTERMIND{end_h1}
-{start_paragraph}Trouver la bonne combinaison de {SIZE_COMBINATION} couleurs secrètes que notre 'IA' aura générée.{return_line}
-A chaque couleur bien positionnée, vous aurez en retour un indicateur rouge.{return_line}
-A chaque couleur présente mais mal positionnée, vous aurez en retour un indicateur blanc.{end_paragraph}"""
 
 
 class Color(StrEnum):
     """Classe StrEnum représentant une couleur
     associé à son code hexadécimal"""
-    JAUNE = '#ffff00'
-    BLEU = '#0000ff'
-    ROUGE = '#ff0000'
-    VERT = '#00ff00'
-    BLANC = '#ffffff'
+    YELLOW = '#ffff00'
+    BLUE = '#0000ff'
+    RED = '#ff0000'
+    GREEN = '#00ff00'
+    WHITE = '#ffffff'
     MAGENTA = '#ff00ff'
     CYAN = '#00ffff'
-    MARRON = '#906434'
-    NOIR = "#000000"
-    GRIS = '#7f7f7f'
+    BROWN = '#906434'
+    BLACK = "#000000"
+    GRAY = '#7f7f7f'
 
     @classmethod
     def from_index(cls, index: int) -> Self:
@@ -46,12 +45,26 @@ class Color(StrEnum):
         return tuple(int(self.value[i:i + 2], 16) for i in range(1, len(self.value), 2))
 
 
+class Language(StrEnum):
+    FR = 'FR'
+    EN = 'EN'
+
+    @classmethod
+    def to_list(cls) -> list[str]:
+        return list(attribute.value for attribute in cls)
+
+    @classmethod
+    def from_string(cls, name: str) -> Self:
+        """Retourne l'instance correspondant au nom donné"""
+        return next(attribute for attribute in cls if attribute.name == name)
+
+
 class Level(Enum):
     """Classe Enum représentant le nombre de couleurs disponible
     pour composer une combinaison"""
-    FACILE = 4
+    EASY = 4
     NORMAL = 6
-    DIFFICILE = 8
+    HARD = 8
 
     def __str__(self):
         return self.name.lower()
@@ -59,7 +72,7 @@ class Level(Enum):
     @classmethod
     def from_string(cls, name: str) -> Self:
         """Retourne l'instance correspondant au nom donné"""
-        return next(attribute for attribute in cls if attribute.name.lower() == name)
+        return next(attribute for attribute in cls if attribute.name.lower() == name.lower())
 
     @classmethod
     def to_list(cls) -> list[str]:
@@ -77,7 +90,7 @@ class Neighbor(Enum):
 class Try(Enum):
     """Classe Enum représentant le nombre maximum d'essais
     pour trouver la combinaison secrète"""
-    FACILE = 12
+    EASY = 12
     NORMAL = 10
 
     def __str__(self):
@@ -94,10 +107,93 @@ class Try(Enum):
         return list(str(attribute) for attribute in cls)
 
 
+class Config:
+    """Gestion via un fichier json de paramètres"""
+    _DEFAULT_CONFIG = {'language': 'FR', 'level': 'normal', 'tries': 'normal'}
+
+    def __init__(self):
+        self._schema = {
+            "type": "object",
+            "properties": {
+                "language": {"enum": Language.to_list()},
+                "level": {"enum": Level.to_list()},
+                "tries": {"enum": Try.to_list()},
+            },
+            "required": ["language", "level", "tries"]
+        }
+        self._config = self._get_config()
+
+    @staticmethod
+    def _set_config(config: dict) -> None:
+        """Stockage du paramètrage en json"""
+        with open(ROOT_DIR / "config.json", 'w', encoding='utf-8') as file:
+            dump(config, file, indent=4)
+
+    @property
+    def language(self) -> Language:
+        return Language.from_string(self._config["language"])
+
+    @language.setter
+    def language(self, value: Language) -> None:
+        if not isinstance(value, Language):
+            raise ValueError("")
+        self._config["language"] = value.name
+        self._set_config(self._config)
+
+    @property
+    def level(self) -> Level:
+        return Level.from_string(self._config["level"])
+
+    @level.setter
+    def level(self, value: Level) -> None:
+        if not isinstance(value, Level):
+            raise ValueError("")
+        self._config["level"] = value.name.lower()
+        self._set_config(self._config)
+
+    @property
+    def tries(self) -> Try:
+        return Try.from_string(self._config["tries"])
+
+    @tries.setter
+    def tries(self, value: Try) -> None:
+        if not isinstance(value, Try):
+            raise ValueError("")
+        self._config["tries"] = value.name.lower()
+        self._set_config(self._config)
+
+    def _check_json(self, data) -> bool:
+        """Validation des données"""
+        try:
+            validate(instance=data, schema=self._schema)
+        except ValidationError as e:
+            print(f"Erreur de validation: {e}")
+            return False
+        return True
+
+    def _get_config(self) -> dict:
+        """Si valide, retourne le paramètrage stocké dans le fichier config.json.
+        Sinon le paramètrage par défaut"""
+        try:
+            with open(ROOT_DIR / "config.json", 'r', encoding='utf-8') as file:
+                config: dict = load(file)
+        except JSONDecodeError as e:
+            print(f"Erreur de décodage JSON: {e}")
+        except FileNotFoundError as e:
+            print(f"Fichier non trouvé: {e}")
+        except Exception as e:
+            print(f"Une erreur est survenue: {e}")
+        else:
+            if self._check_json(config):
+                return config
+        self._set_config(Config._DEFAULT_CONFIG)
+        return Config._DEFAULT_CONFIG
+
+
 class View(StrEnum):
     """Classe StrEnum représentant une vue"""
     CONSOLE = 'console'
-    WINDOW = 'fenetre'
+    WINDOW = 'window'
 
     @classmethod
     def from_string(cls, name: str) -> Self:
@@ -110,24 +206,7 @@ class View(StrEnum):
         return list(attribute.value for attribute in cls)
 
 
-def get_help(mode: View) -> str:
-    """Retourne le texte d'aide à afficher en fonction de la vue"""
-    start_h1 = end_h1 = start_paragraph = end_paragraph = return_line = ""
-    if mode == View.WINDOW:
-        start_h1 = "<h1>"
-        end_h1 = "</h1>"
-        start_paragraph = "<p>"
-        end_paragraph = "</p>"
-        return_line = "<br />"
-    preamble = PREAMBLE.format(start_h1=start_h1, end_h1=end_h1,
-                               start_paragraph=start_paragraph, end_paragraph=end_paragraph,
-                               return_line=return_line, SIZE_COMBINATION=SIZE_COMBINATION)
-    return (f"{preamble}\n\nEntrez votre combinaison secrète en utilisant les chiffres des couleurs disponibles.\n"
-            if mode == View.CONSOLE else
-            f"{preamble}\n{get_resource(DIRECTORIES['html'] / "help.html")}")
-
-
 def get_resource(filename: Path) -> str:
-    """Retourne le contenu de la ressource situé au chemin donné"""
+    """Retourne le contenu de la ressource située au chemin donné"""
     with open(filename, 'r', encoding='utf-8') as f:
         return f.read()

@@ -17,7 +17,7 @@ class PieceSize(Enum):
 
 class Piece(QLabel):
     """Représentation d'un pion"""
-    def __init__(self, color: Color = Color.NOIR, *args, **kwargs) -> None:
+    def __init__(self, color: Color = Color.BLACK, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         self.color = color
@@ -30,7 +30,7 @@ class PieceClue(Piece):
         self.setMaximumSize(PieceSize.CLUE.value, PieceSize.CLUE.value)
         self.setMinimumSize(PieceSize.CLUE.value, PieceSize.CLUE.value)
         self.radius = PieceSize.CLUE.value // 2
-        self.set_color(Color.NOIR)
+        self.set_color(Color.BLACK)
 
     def set_color(self, color: Color) -> None:
         """Associe une Color au pion et lui applique"""
@@ -75,7 +75,7 @@ class PieceSecret(Piece):
         self.setMaximumSize(PieceSize.SECRET.value, PieceSize.SECRET.value)
         self.setMinimumSize(PieceSize.SECRET.value, PieceSize.SECRET.value)
         self.radius = PieceSize.SECRET.value // 2
-        self.set_color(Color.GRIS)
+        self.set_color(Color.GRAY)
         self.setText("?")
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
 

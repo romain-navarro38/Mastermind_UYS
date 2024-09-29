@@ -9,7 +9,7 @@
 
 ##  Exécution
 ### Par défaut
-Mode fenêtré / difficulté normale
+Mode fenêtré
 
 `python -m mastermind`
 ### Option interface (-m)
@@ -18,13 +18,13 @@ Mode fenêtré / difficulté normale
 
 `python -m mastermind -m console`
 ### Option nombre de couleurs (-l)
-- facile
+- easy
 - normal
-- difficile
+- hard
 
-`python -m mastermind -l difficile`
+`python -m mastermind -l hard`
 ### Option nombre de tentatives (-t)
-- facile
+- easy
 - normal
 
-`python -m mastermind -t facile`
+`python -m mastermind -t easy`

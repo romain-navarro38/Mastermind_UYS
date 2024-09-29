@@ -2,16 +2,22 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QKeyEvent
 
 from mastermind.model.game import Mastermind
-from mastermind.utils.parameters import Color, Neighbor
+from mastermind.utils.parameters import Color, Neighbor, Config, View, Language
 from mastermind.views.main_window import MainWindow
 from mastermind.views.new_game import NewGame
 from mastermind.views.help import HelpWindow
 
 
 class WindowController:
-    def __init__(self, model: Mastermind, view: MainWindow) -> None:
+    def __init__(self, model: Mastermind, config: Config, view: MainWindow) -> None:
         self.model = model
+        self.config = config
         self.view = view
+
+    def _change_language(self, language: str) -> None:
+        new_language = Language.from_string(language)
+        self.config.language = new_language
+        self.view.setup_ui_translation(self._get_translations(new_language))
 
     def _close_view(self) -> None:
         """Fermeture de la fenêtre de jeu"""
@@ -32,8 +38,33 @@ class WindowController:
             self.view.game_in_progress = True
             self.view.activate_next_try()
 
+    def _get_translations(self, lang: Language) -> dict:
+        return {
+            'main_title': self.model.get_translation(lang, 'main_window_title'),
+            'select_color': self.model.get_translation(lang, 'select_color_window'),
+            'submit_button': self.model.get_translation(lang, 'submit'),
+            'help_button': self.model.get_translation(lang, 'help'),
+            'new_game': self.model.get_translation(lang, 'new_game'),
+            'quit_button': self.model.get_translation(lang, 'quit'),
+            'confirmation_title': self.model.get_translation(lang, 'confirmation_window_title'),
+            'message_confirmation': self.model.get_translation(lang, 'message_confirmation'),
+            'yes': self.model.get_translation(lang, 'yes'),
+            'no': self.model.get_translation(lang, 'no'),
+            'start': self.model.get_translation(lang, 'start'),
+            'colors': self.model.get_translation(lang, 'colors'),
+            'tries': self.model.get_translation(lang, 'tries'),
+            'nb_colors_availables': self.model.get_translation(lang, 'nb_colors_availables'),
+            'nb_max_tries': self.model.get_translation(lang, 'nb_max_tries'),
+            'EASY': self.model.get_translation(lang, 'EASY'),
+            'NORMAL': self.model.get_translation(lang, 'NORMAL'),
+            'HARD': self.model.get_translation(lang, 'HARD'),
+            'win_message': self.model.get_translation(lang, 'win_window'),
+            'lose_message': self.model.get_translation(lang, 'lose_window'),
+        }
+
     def _init_reception_signal(self) -> None:
         """Connexion des signaux de la vue"""
+        self.view.change_language.connect(self._change_language)
         self.view.evaluation_combination.connect(self._evaluate_combination)
         self.view.event_keyboard.connect(self._parse_input)
         self.view.restart.connect(self._new_game)
@@ -49,7 +80,11 @@ class WindowController:
 
     def _load_ui(self) -> None:
         """Chargement des composants de la fenêtre"""
-        self.view.setup_ui(self.model.max_tries.value, self.model.level.value, self.model.secret_combination)
+        self.view.setup_ui(self.model.max_tries.value,
+                           self.model.level.value,
+                           self.model.secret_combination,
+                           self.config.language,
+                           self._get_translations(self.config.language))
 
     def _new_game(self) -> None:
         """Chargement d'une nouvelle fenêtre de jeu"""
@@ -58,6 +93,7 @@ class WindowController:
         dialog = NewGame(self.view, self.model.level, self.model.max_tries)
         if dialog.exec():
             level, tries = dialog.get_params_new_game()
+            self.config.level, self.config.tries = level, tries
             self.model.init_new_game(level, tries)
             self._close_view()
             self.view = MainWindow()
@@ -71,7 +107,7 @@ class WindowController:
                     self.view.close()
                 case Qt.Key_N:
                     self._new_game()
-                case Qt.Key_R:
+                case Qt.Key_E:
                     self._show_rules()
         elif not self._is_game_over():
             match event.key():
@@ -85,7 +121,12 @@ class WindowController:
                     self.view.validate_combinaison()
 
     def _show_rules(self) -> None:
-        self.rules = HelpWindow()
+        help_text = {
+            'close_button': self.model.get_translation(self.config.language, 'close'),
+            'window_title': self.model.get_translation(self.config.language, 'help'),
+            'help': self.model.get_help(View.WINDOW, self.config.language)
+        }
+        self.rules = HelpWindow(help_text)
         self.rules.setWindowModality(Qt.ApplicationModal)
         self.rules.show()
 
