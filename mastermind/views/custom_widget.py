@@ -30,6 +30,6 @@ class CustomSpacer(QSpacerItem):
     """Défini un QSpacerItem en fonction de l'orientation voulue"""
     def __init__(self, orientation: Orientation) -> None:
         if orientation == Orientation.VERTICAL:
-            super().__init__(20, 40, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+            super().__init__(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         else:
-            super().__init__(40, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+            super().__init__(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
