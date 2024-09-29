@@ -41,7 +41,7 @@ class Mastermind:
             return shuffle_items_list(evaluation)
 
     @staticmethod
-    def get_text(language: Language, key: str) -> str:
+    def get_translation(language: Language, key: str) -> str:
         """Retourne un texte dans la langue demandée"""
         return LANGUAGE[language][key]
 
@@ -52,13 +52,13 @@ class Mastermind:
             start_h1, end_h1 = "<h1>", "</h1>"
             start_paragraph, end_paragraph = "<p>", "</p>"
             return_line = "<br />"
-        preamble = self.get_text(language, "preamble").format(
+        preamble = self.get_translation(language, "preamble").format(
             start_h1=start_h1, end_h1=end_h1,
             start_paragraph=start_paragraph, end_paragraph=end_paragraph,
             return_line=return_line, SIZE_COMBINATION=SIZE_COMBINATION
         )
         html = f"help_{language.name}.html"
-        return (f"{preamble}\n\n{self.get_text(language, "choose_color")}\n"
+        return (f"{preamble}\n\n{self.get_translation(language, "choose_color")}\n"
                 if mode == View.CONSOLE else
                 f"{preamble}\n{get_resource(DIRECTORIES['html'] / html)}")
 

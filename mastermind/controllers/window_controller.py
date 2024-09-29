@@ -40,26 +40,26 @@ class WindowController:
 
     def _get_translations(self, lang: Language) -> dict:
         return {
-            'main_title': self.model.get_text(lang, 'main_window_title'),
-            'select_color': self.model.get_text(lang, 'select_color_window'),
-            'submit_button': self.model.get_text(lang, 'submit'),
-            'help_button': self.model.get_text(lang, 'help'),
-            'new_game': self.model.get_text(lang, 'new_game'),
-            'quit_button': self.model.get_text(lang, 'quit'),
-            'confirmation_title': self.model.get_text(lang, 'confirmation_window_title'),
-            'message_confirmation': self.model.get_text(lang, 'message_confirmation'),
-            'yes': self.model.get_text(lang, 'yes'),
-            'no': self.model.get_text(lang, 'no'),
-            'start': self.model.get_text(lang, 'start'),
-            'colors': self.model.get_text(lang, 'colors'),
-            'tries': self.model.get_text(lang, 'tries'),
-            'nb_colors_availables': self.model.get_text(lang, 'nb_colors_availables'),
-            'nb_max_tries': self.model.get_text(lang, 'nb_max_tries'),
-            'EASY': self.model.get_text(lang, 'EASY'),
-            'NORMAL': self.model.get_text(lang, 'NORMAL'),
-            'HARD': self.model.get_text(lang, 'HARD'),
-            'win_message': self.model.get_text(lang, 'win_window'),
-            'lose_message': self.model.get_text(lang, 'lose_window'),
+            'main_title': self.model.get_translation(lang, 'main_window_title'),
+            'select_color': self.model.get_translation(lang, 'select_color_window'),
+            'submit_button': self.model.get_translation(lang, 'submit'),
+            'help_button': self.model.get_translation(lang, 'help'),
+            'new_game': self.model.get_translation(lang, 'new_game'),
+            'quit_button': self.model.get_translation(lang, 'quit'),
+            'confirmation_title': self.model.get_translation(lang, 'confirmation_window_title'),
+            'message_confirmation': self.model.get_translation(lang, 'message_confirmation'),
+            'yes': self.model.get_translation(lang, 'yes'),
+            'no': self.model.get_translation(lang, 'no'),
+            'start': self.model.get_translation(lang, 'start'),
+            'colors': self.model.get_translation(lang, 'colors'),
+            'tries': self.model.get_translation(lang, 'tries'),
+            'nb_colors_availables': self.model.get_translation(lang, 'nb_colors_availables'),
+            'nb_max_tries': self.model.get_translation(lang, 'nb_max_tries'),
+            'EASY': self.model.get_translation(lang, 'EASY'),
+            'NORMAL': self.model.get_translation(lang, 'NORMAL'),
+            'HARD': self.model.get_translation(lang, 'HARD'),
+            'win_message': self.model.get_translation(lang, 'win_window'),
+            'lose_message': self.model.get_translation(lang, 'lose_window'),
         }
 
     def _init_reception_signal(self) -> None:
@@ -122,8 +122,8 @@ class WindowController:
 
     def _show_rules(self) -> None:
         help_text = {
-            'close_button': self.model.get_text(self.config.language, 'close'),
-            'window_title': self.model.get_text(self.config.language, 'help'),
+            'close_button': self.model.get_translation(self.config.language, 'close'),
+            'window_title': self.model.get_translation(self.config.language, 'help'),
             'help': self.model.get_help(View.WINDOW, self.config.language)
         }
         self.rules = HelpWindow(help_text)
