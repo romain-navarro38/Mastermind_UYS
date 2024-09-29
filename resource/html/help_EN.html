@@ -1,35 +1,36 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Mastermind</title>
 </head>
 <body>
-<p>Vous disposez d'un nombre limit&eacute; de tentatives pour&nbsp;trouv&eacute; la&nbsp;combinason secr&egrave;te. Chaque tentative est &agrave; composer &agrave; partir des couleurs disponibles et peut contenir plusieurs fois la m&ecirc;me couleur.<br />Les nombres de tentatives et de couleurs disponibles sont en fonction de la diffilcult&eacute; choisie.</p>
-<p>Un emplacement d'une combinaison tent&eacute;e peut correspondre qu'&agrave; un seul indicateur (rouge, blanc ou rien). L'ordre des indicateurs obtenus est al&eacute;atoire et ne donne donc pas d'informations suppl&eacute;mentaires.</p>
-<h3>Exemple 1</h3>
-<p>Combinaison secr&egrave;te : jaune, vert, rouge et bleu<br />Combinaison tent&eacute;e : vert, magenta, blanc et bleu<br />Indicateurs obtenus : 1 rouge et 1 blanc</p>
-<p>Explication :</p>
+<p>You have a limited number of attempts to find the secret combination. Each attempt must be composed of the available colors, and may contain the same color several times.<br />The number of attempts and colors available depends on the chosen diffilculty.</p>
+<p>A location in an attempted combination can correspond to only one indicator (red, white or nothing). The order of the indicators obtained is random and therefore provides no additional information.</p>
+<h3>Example 1</h3>
+<p>Secret combination: yellow, green, red and blue<br />Combination attempted: green, magenta, white and blue<br />Indicators obtained: 1 red and 1 white</p>
+<p>Explanation:</p>
 <ul>
-<li>Le bleu obtient un indicateur rouge, car bien plac&eacute;</li>
-<li>Le vert obtient un indicateur blanc car pr&eacute;sent mais mal plac&eacute;</li>
-<li>Le magenta et le blanc n'obtiennent rien, car non pr&eacute;sent dans la combinaison secr&egrave;te</li>
+<li>Blue gets a red indicator, because it's well-placed</li>
+<li>Green gets a white indicator because it is present but poorly placed</li>
+<li>Magenta and white get nothing, as they are not present in the secret combination
+</li>
 </ul>
-<h3>Exemple 2</h3>
-<p>Combinaison secr&egrave;te : jaune, vert, bleu et bleu<br />Combinaison tent&eacute;e : vert, vert, blanc et bleu<br />Indicateurs obtenus : 2 rouges</p>
-<p>Explication :</p>
+<h3>Example 2</h3>
+<p>Secret combination: yellow, green, blue and blue<br />Tried combination: green, green, white and blue<br />Indicators obtained: 2 reds</p>
+<p>Explanation:</p>
 <ul>
-<li>Le deuxi&egrave;me vert et le bleu obtiennent un indicateur rouge chacun car bien plac&eacute;s</li>
-<li>Le premier vert n'obtient rien, car celui de la combinaison secr&egrave;te &agrave; d&eacute;j&agrave; donn&eacute; un rouge</li>
-<li>Le blanc n'obtient rien, car non pr&eacute;sent dans la combinaison secr&egrave;te</li>
+<li>The second green and the blue get a red indicator each because they are well-placed.</li>
+<li>The first green gets nothing, because the one in the secret combination gives a red.</li>
+<li>White gets nothing, as it is not present in the secret combination.</li>
 </ul>
-<h2>Raccourci clavier</h2>
+<h2>Keyboard shortcut</h2>
 <ul>
-<li>Pav&eacute; num&eacute;rique : S&eacute;lection d'une couleur &agrave; l'emplacement actif</li>
-<li>Fl&egrave;ches gauche et droite : Change l'emplacement actif</li>
-<li>Ctrl+N (⌘+N) : Nouvelle partie</li>
-<li>Ctrl+R (⌘+R) : Aide</li>
-<li>Ctrl+Q (⌘+Q) : Quitter</li>
+<li>Number pad: select a color for the active location</li>
+<li>Left and right arrows: Change active location</li>
+<li>Ctrl+N (⌘+N) : New game</li>
+<li>Ctrl+E (⌘+E) : Help</li>
+<li>Ctrl+Q (⌘+Q) : Quit</li>
 </ul>
 </body>
 </html>
