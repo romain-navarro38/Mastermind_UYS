@@ -1,6 +1,6 @@
 .venv
 .idea
-ui
 Pipfile
 Pipfile.lock
 __pycache__/
+config.json
