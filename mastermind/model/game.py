@@ -1,7 +1,8 @@
 from random import choice, shuffle
 
 from mastermind.model.language import LANGUAGE
-from mastermind.utils.parameters import Level, Color, Try, SIZE_COMBINATION, Language, View, get_resource, DIRECTORIES
+from mastermind.utils.dir import Dir, get_resource
+from mastermind.utils.parameters import Level, Color, Try, SIZE_COMBINATION, Language, View
 
 
 def shuffle_items_list(list_color: list) -> tuple:
@@ -57,10 +58,10 @@ class Mastermind:
             start_paragraph=start_paragraph, end_paragraph=end_paragraph,
             return_line=return_line, SIZE_COMBINATION=SIZE_COMBINATION
         )
-        html = f"help_{language.name}.html"
+        html_filename = f"help_{language.name}.html"
         return (f"{preamble}\n\n{self.get_translation(language, "choose_color")}\n"
                 if mode == View.CONSOLE else
-                f"{preamble}\n{get_resource(DIRECTORIES['html'] / html)}")
+                f"{preamble}\n{get_resource(Dir.HTML / html_filename)}")
 
     def init_new_game(self, level: Level, max_tries: Try) -> None:
         """Initialiser les attributs pour commencer une nouvelle partie"""

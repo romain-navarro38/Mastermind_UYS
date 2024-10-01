@@ -1,7 +1,7 @@
 from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtWidgets import QWidget, QTextBrowser, QVBoxLayout, QScrollArea
 
-from mastermind.utils.parameters import get_resource, DIRECTORIES
+from mastermind.utils.dir import Dir, get_resource
 from mastermind.views.custom_widget import CustomButton
 
 
@@ -13,8 +13,8 @@ class HelpWindow(QWidget):
         self.translation = translation
         self._setup_ui()
         self.resize(600, 500)
-        self.setWindowIcon((QIcon(QPixmap(DIRECTORIES['icon'] / "logo.png"))))
-        self.setStyleSheet(get_resource(DIRECTORIES['style'] / "help.qss"))
+        self.setWindowIcon((QIcon(QPixmap(Dir.ICON / "logo.png"))))
+        self.setStyleSheet(get_resource(Dir.STYLE / "help.qss"))
 
     def _setup_ui(self) -> None:
         self._setup_ui_create_widgets()

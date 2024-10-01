@@ -4,7 +4,7 @@ from PySide6.QtCore import QSize
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QSpacerItem, QSizePolicy, QPushButton
 
-from mastermind.utils.parameters import get_resource, DIRECTORIES
+from mastermind.utils.dir import Dir, get_resource
 
 font_bold = QFont()
 font_bold.setBold(True)
@@ -22,7 +22,7 @@ class CustomButton(QPushButton):
         super().__init__(*args, **kwargs)
 
         self.setFont(font_bold)
-        self.setStyleSheet(get_resource(DIRECTORIES['style'] / "custom_button.qss"))
+        self.setStyleSheet(get_resource(Dir.STYLE / "custom_button.qss"))
         self.setMinimumSize(QSize(0, 30))
 
 
