@@ -1,7 +1,10 @@
+import logging
 from random import choice, shuffle
 
 from mastermind.model.language import LANGUAGE
-from mastermind.utils.parameters import Level, Color, Try, SIZE_COMBINATION, Language, View, get_resource, DIRECTORIES
+from mastermind.utils.dir import Dir, get_resource
+from mastermind.utils.logger import setup_logger
+from mastermind.utils.parameters import Level, Color, Try, SIZE_COMBINATION, Language, View
 
 
 def shuffle_items_list(list_color: list) -> tuple:
@@ -11,6 +14,8 @@ def shuffle_items_list(list_color: list) -> tuple:
 
 
 class Mastermind:
+    log = setup_logger("game", logging.INFO)
+
     def __init__(self, level: Level, tries_number: Try) -> None:
         self.init_new_game(level, tries_number)
 
@@ -28,6 +33,8 @@ class Mastermind:
         et dans quel état (gagnée ou perdue)."""
         self.win = clues.count(Color.RED) == SIZE_COMBINATION
         self.game_over = self.win or not self.remaining_tries
+        if self.game_over:
+            Mastermind.log.info(f"Game {'won' if self.win else 'lost'}")
 
     def evaluate_combinaison(self, combination: tuple[Color, ...]) -> tuple[Color] | None:
         """Retourne une liste de Color représentant des indices déterminés en
@@ -57,10 +64,10 @@ class Mastermind:
             start_paragraph=start_paragraph, end_paragraph=end_paragraph,
             return_line=return_line, SIZE_COMBINATION=SIZE_COMBINATION
         )
-        html = f"help_{language.name}.html"
+        html_filename = f"help_{language.name}.html"
         return (f"{preamble}\n\n{self.get_translation(language, "choose_color")}\n"
                 if mode == View.CONSOLE else
-                f"{preamble}\n{get_resource(DIRECTORIES['html'] / html)}")
+                f"{preamble}\n{get_resource(Dir.HTML / html_filename)}")
 
     def init_new_game(self, level: Level, max_tries: Try) -> None:
         """Initialiser les attributs pour commencer une nouvelle partie"""
@@ -70,3 +77,5 @@ class Mastermind:
         self.game_over = self.win = False
         self.available_colors = tuple(Color)[:self.level.value]
         self._secret = self._generate_combinaison()
+        Mastermind.log.info(f"New game: level {self.level}, tries {self.max_tries}")
+        Mastermind.log.debug(f"Combination : {" ".join(color.name for color in self._secret)}")

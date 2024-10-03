@@ -2,7 +2,8 @@ from PySide6.QtCore import Qt, Signal, QEvent, QSize
 from PySide6.QtGui import QIcon, QPixmap, QKeyEvent
 from PySide6.QtWidgets import QWidget, QLabel, QGridLayout, QVBoxLayout, QHBoxLayout, QComboBox
 
-from mastermind.utils.parameters import Color, DIRECTORIES, Neighbor, Language, get_resource
+from mastermind.utils.dir import Dir, get_resource
+from mastermind.utils.parameters import Color, Neighbor, Language
 from mastermind.views.confirmation import ConfirmationMessage
 from mastermind.views.piece import PieceColor, PieceTry
 from mastermind.views.row import RowTry, Status, RowSecret
@@ -24,8 +25,8 @@ class MainWindow(QWidget):
         self.pieces_colors = []
         self.game_in_progress = False
         PieceColor.number = 0
-        self.setWindowIcon((QIcon(QPixmap(DIRECTORIES['icon'] / "logo.png"))))
-        self.setStyleSheet(get_resource(DIRECTORIES['style'] / "main.qss"))
+        self.setWindowIcon((QIcon(QPixmap(Dir.ICON / "logo.png"))))
+        self.setStyleSheet(get_resource(Dir.STYLE / "main.qss"))
         self.setMinimumWidth(450)
 
     def setup_ui(self, max_tries: int, level: int,

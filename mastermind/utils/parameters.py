@@ -1,16 +1,11 @@
 from enum import Enum, StrEnum, auto
 from json import load, JSONDecodeError, dump
 from jsonschema import validate, ValidationError
-from pathlib import Path
 from typing import Self
 
-ROOT_DIR = Path(__file__).parent.parent.parent
-RESOURCE_DIR = ROOT_DIR / "resource"
-DIRECTORIES = {
-    "html": RESOURCE_DIR / "html",
-    "icon": RESOURCE_DIR / "icons",
-    "style": RESOURCE_DIR / "styles",
-}
+from .dir import Dir
+from .logger import setup_logger
+
 SIZE_COMBINATION = 4
 SQUARE = "\u25A0"  # correspondant à ■
 DOT = "\u25CF"  # correspondant à ●
@@ -110,6 +105,7 @@ class Try(Enum):
 class Config:
     """Gestion via un fichier json de paramètres"""
     _DEFAULT_CONFIG = {'language': 'FR', 'level': 'normal', 'tries': 'normal'}
+    log = setup_logger("config")
 
     def __init__(self):
         self._schema = {
@@ -126,7 +122,7 @@ class Config:
     @staticmethod
     def _set_config(config: dict) -> None:
         """Stockage du paramètrage en json"""
-        with open(ROOT_DIR / "config.json", 'w', encoding='utf-8') as file:
+        with open(Dir.ROOT / "config.json", 'w', encoding='utf-8') as file:
             dump(config, file, indent=4)
 
     @property
@@ -175,18 +171,19 @@ class Config:
         """Si valide, retourne le paramètrage stocké dans le fichier config.json.
         Sinon le paramètrage par défaut"""
         try:
-            with open(ROOT_DIR / "config.json", 'r', encoding='utf-8') as file:
+            with open(Dir.ROOT / "config.json", 'r', encoding='utf-8') as file:
                 config: dict = load(file)
         except JSONDecodeError as e:
-            print(f"Erreur de décodage JSON: {e}")
+            Config.log.error(f"JSON decoding error: {e}")
         except FileNotFoundError as e:
-            print(f"Fichier non trouvé: {e}")
+            Config.log.error(f"Configuration file not found: {e}")
         except Exception as e:
-            print(f"Une erreur est survenue: {e}")
+            Config.log.error(f"An error has occurred: {e}")
         else:
             if self._check_json(config):
                 return config
         self._set_config(Config._DEFAULT_CONFIG)
+        Config.log.info("Restored configuration file")
         return Config._DEFAULT_CONFIG
 
 
@@ -204,9 +201,3 @@ class View(StrEnum):
     def to_list(cls) -> list[str]:
         """Retourne la liste de tous les attributs au format str"""
         return list(attribute.value for attribute in cls)
-
-
-def get_resource(filename: Path) -> str:
-    """Retourne le contenu de la ressource située au chemin donné"""
-    with open(filename, 'r', encoding='utf-8') as f:
-        return f.read()
