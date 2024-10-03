@@ -4,7 +4,8 @@ from functools import partial
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QWidget, QSizePolicy, QFrame, QLabel
 
-from mastermind.utils.parameters import Color, SIZE_COMBINATION, Neighbor
+from mastermind.model.settings import SIZE_COMBINATION
+from mastermind.utils.parameters import Color, Neighbor
 from mastermind.views.piece import PieceClue, PieceTry, PieceSecret
 from mastermind.views.custom_widget import CustomSpacer, Orientation, font_bold
 

@@ -2,7 +2,9 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QKeyEvent
 
 from mastermind.model.game import Mastermind
-from mastermind.utils.parameters import Color, Neighbor, Config, View, Language
+from mastermind.model.language import get_translation, get_help
+from mastermind.model.settings import Config
+from mastermind.utils.parameters import Color, Neighbor, View, Language
 from mastermind.views.main_window import MainWindow
 from mastermind.views.new_game import NewGame
 from mastermind.views.help import HelpWindow
@@ -40,26 +42,26 @@ class WindowController:
 
     def _get_translations(self, lang: Language) -> dict:
         return {
-            'main_title': self.model.get_translation(lang, 'main_window_title'),
-            'select_color': self.model.get_translation(lang, 'select_color_window'),
-            'submit_button': self.model.get_translation(lang, 'submit'),
-            'help_button': self.model.get_translation(lang, 'help'),
-            'new_game': self.model.get_translation(lang, 'new_game'),
-            'quit_button': self.model.get_translation(lang, 'quit'),
-            'confirmation_title': self.model.get_translation(lang, 'confirmation_window_title'),
-            'message_confirmation': self.model.get_translation(lang, 'message_confirmation'),
-            'yes': self.model.get_translation(lang, 'yes'),
-            'no': self.model.get_translation(lang, 'no'),
-            'start': self.model.get_translation(lang, 'start'),
-            'colors': self.model.get_translation(lang, 'colors'),
-            'tries': self.model.get_translation(lang, 'tries'),
-            'nb_colors_availables': self.model.get_translation(lang, 'nb_colors_availables'),
-            'nb_max_tries': self.model.get_translation(lang, 'nb_max_tries'),
-            'EASY': self.model.get_translation(lang, 'EASY'),
-            'NORMAL': self.model.get_translation(lang, 'NORMAL'),
-            'HARD': self.model.get_translation(lang, 'HARD'),
-            'win_message': self.model.get_translation(lang, 'win_window'),
-            'lose_message': self.model.get_translation(lang, 'lose_window'),
+            'main_title': get_translation(lang, 'main_window_title'),
+            'select_color': get_translation(lang, 'select_color_window'),
+            'submit_button': get_translation(lang, 'submit'),
+            'help_button': get_translation(lang, 'help'),
+            'new_game': get_translation(lang, 'new_game'),
+            'quit_button': get_translation(lang, 'quit'),
+            'confirmation_title': get_translation(lang, 'confirmation_window_title'),
+            'message_confirmation': get_translation(lang, 'message_confirmation'),
+            'yes': get_translation(lang, 'yes'),
+            'no': get_translation(lang, 'no'),
+            'start': get_translation(lang, 'start'),
+            'colors': get_translation(lang, 'colors'),
+            'tries': get_translation(lang, 'tries'),
+            'nb_colors_availables': get_translation(lang, 'nb_colors_availables'),
+            'nb_max_tries': get_translation(lang, 'nb_max_tries'),
+            'EASY': get_translation(lang, 'EASY'),
+            'NORMAL': get_translation(lang, 'NORMAL'),
+            'HARD': get_translation(lang, 'HARD'),
+            'win_message': get_translation(lang, 'win_window'),
+            'lose_message': get_translation(lang, 'lose_window'),
         }
 
     def _init_reception_signal(self) -> None:
@@ -122,9 +124,9 @@ class WindowController:
 
     def _show_rules(self) -> None:
         help_text = {
-            'close_button': self.model.get_translation(self.config.language, 'close'),
-            'window_title': self.model.get_translation(self.config.language, 'help'),
-            'help': self.model.get_help(View.WINDOW, self.config.language)
+            'close_button': get_translation(self.config.language, 'close'),
+            'window_title': get_translation(self.config.language, 'help'),
+            'help': get_help(View.WINDOW, self.config.language)
         }
         self.rules = HelpWindow(help_text)
         self.rules.setWindowModality(Qt.ApplicationModal)

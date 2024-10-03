@@ -1,10 +1,9 @@
 import logging
 from random import choice, shuffle
 
-from mastermind.model.language import LANGUAGE
-from mastermind.utils.dir import Dir, get_resource
+from .settings import SIZE_COMBINATION
 from mastermind.utils.logger import setup_logger
-from mastermind.utils.parameters import Level, Color, Try, SIZE_COMBINATION, Language, View
+from mastermind.utils.parameters import Level, Color, Try
 
 
 def shuffle_items_list(list_color: list) -> tuple:
@@ -46,28 +45,6 @@ class Mastermind:
             evaluation = [Color.RED] * red + [Color.WHITE] * white
             self._update_game_status(evaluation)
             return shuffle_items_list(evaluation)
-
-    @staticmethod
-    def get_translation(language: Language, key: str) -> str:
-        """Retourne un texte dans la langue demandée"""
-        return LANGUAGE[language][key]
-
-    def get_help(self, mode: View, language: Language) -> str:
-        """Retourne le texte d'aide à afficher en fonction de la vue"""
-        start_h1 = end_h1 = start_paragraph = end_paragraph = return_line = ""
-        if mode == View.WINDOW:
-            start_h1, end_h1 = "<h1>", "</h1>"
-            start_paragraph, end_paragraph = "<p>", "</p>"
-            return_line = "<br />"
-        preamble = self.get_translation(language, "preamble").format(
-            start_h1=start_h1, end_h1=end_h1,
-            start_paragraph=start_paragraph, end_paragraph=end_paragraph,
-            return_line=return_line, SIZE_COMBINATION=SIZE_COMBINATION
-        )
-        html_filename = f"help_{language.name}.html"
-        return (f"{preamble}\n\n{self.get_translation(language, "choose_color")}\n"
-                if mode == View.CONSOLE else
-                f"{preamble}\n{get_resource(Dir.HTML / html_filename)}")
 
     def init_new_game(self, level: Level, max_tries: Try) -> None:
         """Initialiser les attributs pour commencer une nouvelle partie"""

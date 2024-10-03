@@ -6,7 +6,8 @@ from PySide6.QtWidgets import QApplication
 from mastermind.controllers.console_controller import ConsoleController
 from mastermind.controllers.window_controller import WindowController
 from mastermind.model.game import Mastermind
-from mastermind.utils.parameters import Level, Try, View, Config
+from mastermind.model.settings import Config
+from mastermind.utils.parameters import Level, Try, View
 from mastermind.views.console import Console
 from mastermind.views.main_window import MainWindow
 

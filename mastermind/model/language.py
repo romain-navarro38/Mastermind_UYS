@@ -1,3 +1,7 @@
+from .settings import SIZE_COMBINATION
+from mastermind.utils.dir import get_resource, Dir
+from mastermind.utils.parameters import Language, View
+
 LANGUAGE = {
     'FR': {
         'preamble': """{start_h1}JEU DU MASTERMIND{end_h1}
@@ -86,3 +90,25 @@ For each color present but incorrectly positioned, you'll get a white indicator 
         'GRAY': "gray",
     }
 }
+
+
+def get_translation(language: Language, key: str) -> str:
+    """Retourne un texte dans la langue demandée"""
+    return LANGUAGE[language][key]
+
+def get_help(mode: View, language: Language) -> str:
+    """Retourne le texte d'aide à afficher en fonction de la vue"""
+    start_h1 = end_h1 = start_paragraph = end_paragraph = return_line = ""
+    if mode == View.WINDOW:
+        start_h1, end_h1 = "<h1>", "</h1>"
+        start_paragraph, end_paragraph = "<p>", "</p>"
+        return_line = "<br />"
+    preamble = get_translation(language, "preamble").format(
+        start_h1=start_h1, end_h1=end_h1,
+        start_paragraph=start_paragraph, end_paragraph=end_paragraph,
+        return_line=return_line, SIZE_COMBINATION=SIZE_COMBINATION
+    )
+    html_filename = f"help_{language.name}.html"
+    return (f"{preamble}\n\n{get_translation(language, "choose_color")}\n"
+            if mode == View.CONSOLE else
+            f"{preamble}\n{get_resource(Dir.HTML / html_filename)}")

@@ -1,5 +1,7 @@
 from mastermind.model.game import Mastermind
-from mastermind.utils.parameters import Color, SIZE_COMBINATION, SQUARE, DOT, View, Config
+from mastermind.model.language import get_translation, get_help
+from mastermind.model.settings import Config, DOT, SIZE_COMBINATION, SQUARE
+from mastermind.utils.parameters import Color, View
 from mastermind.views.console import Console
 
 
@@ -17,7 +19,7 @@ class ConsoleController:
             red, green, blue = color.to_rgb()
             if not symbol:
                 number = f"[{i}]"
-                text = self.model.get_translation(self.config.language, color.name).capitalize()
+                text = get_translation(self.config.language, color.name).capitalize()
             str_color.append(f"{number} \033[38;2;{red};{green};{blue}m{text}")
         return tuple(str_color)
 
@@ -25,9 +27,9 @@ class ConsoleController:
         """Si la partie est terminée, fait afficher à l'UI le résultat final"""
         if not self.model.game_over:
             return False
-        game_over_sentence = (self.model.get_translation(self.config.language, "win_console")
+        game_over_sentence = (get_translation(self.config.language, "win_console")
                               if self.model.win
-                              else self.model.get_translation(self.config.language, "lose_console"))
+                              else get_translation(self.config.language, "lose_console"))
         self.view.show_game_over(game_over_sentence,
                                  self._convertion_color(self.model.secret_combination, SQUARE))
         return True
@@ -36,7 +38,7 @@ class ConsoleController:
         """Obtient de l'utilisateur une combinaison.
         La retourne sous forme d'un tuple de Color"""
         try_number = self.model.max_tries.value - self.model.remaining_tries + 1
-        sentence = self.model.get_translation(self.config.language, "input_user").format(
+        sentence = get_translation(self.config.language, "input_user").format(
             try_number=try_number,
             max_tries=self.model.max_tries.value,
             size_combination=SIZE_COMBINATION
@@ -46,7 +48,7 @@ class ConsoleController:
 
     def run(self) -> None:
         """Boucle du jeu"""
-        self.view.show_rules(self.model.get_help(View.CONSOLE, self.config.language),
+        self.view.show_rules(get_help(View.CONSOLE, self.config.language),
                              self._convertion_color(self.model.available_colors))
         while True:
             colored_combination = self._get_user_combination()
@@ -54,9 +56,9 @@ class ConsoleController:
             if evaluation is not None:
                 self.view.show_result(self._convertion_color(colored_combination, SQUARE),
                                       self._convertion_color(evaluation, DOT),
-                                      self.model.get_translation(self.config.language, "clue"))
+                                      get_translation(self.config.language, "clue"))
             else:
-                self.view.show_warning(self.model.get_translation(self.config.language, "warning"))
+                self.view.show_warning(get_translation(self.config.language, "warning"))
                 continue
 
             if self._endgame():
