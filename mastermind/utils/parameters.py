@@ -4,6 +4,7 @@ from jsonschema import validate, ValidationError
 from typing import Self
 
 from .dir import Dir
+from .logger import setup_logger
 
 SIZE_COMBINATION = 4
 SQUARE = "\u25A0"  # correspondant à ■
@@ -104,6 +105,7 @@ class Try(Enum):
 class Config:
     """Gestion via un fichier json de paramètres"""
     _DEFAULT_CONFIG = {'language': 'FR', 'level': 'normal', 'tries': 'normal'}
+    log = setup_logger("config")
 
     def __init__(self):
         self._schema = {
@@ -172,15 +174,16 @@ class Config:
             with open(Dir.ROOT / "config.json", 'r', encoding='utf-8') as file:
                 config: dict = load(file)
         except JSONDecodeError as e:
-            print(f"Erreur de décodage JSON: {e}")
+            Config.log.error(f"JSON decoding error: {e}")
         except FileNotFoundError as e:
-            print(f"Fichier non trouvé: {e}")
+            Config.log.error(f"Configuration file not found: {e}")
         except Exception as e:
-            print(f"Une erreur est survenue: {e}")
+            Config.log.error(f"An error has occurred: {e}")
         else:
             if self._check_json(config):
                 return config
         self._set_config(Config._DEFAULT_CONFIG)
+        Config.log.info("Restored configuration file")
         return Config._DEFAULT_CONFIG
 
 
