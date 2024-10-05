@@ -4,6 +4,7 @@ QComboBox {
     padding: 1px 18px 1px 10px;
     min-width: 6em;
     background-color: yellow;
+    color: black;
 }
 QComboBox:hover {
     background-color: orange;
